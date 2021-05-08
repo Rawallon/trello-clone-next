@@ -1,0 +1,22 @@
+.cardColumn {
+  border: 1px solid #000;
+  background: #ebecf0;
+  margin: 8px;
+  padding: 8px;
+  min-width: 350px;
+  max-width: 350px;
+  width: 100%;
+  min-height: 115px;
+  height: max-content;
+  transition: 300ms;
+  user-select: none;
+}
+.cardColumnDraggingOver {
+  background: #d3d4d8;
+}
+.cardTitle {
+  padding: 8px;
+  text-align: left;
+  font-size: 1.25rem;
+  user-select: none;
+}
