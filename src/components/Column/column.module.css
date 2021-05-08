@@ -1,4 +1,4 @@
-.cardColumn {
+.column {
   border: 1px solid #000;
   background: #ebecf0;
   margin: 8px;
@@ -10,17 +10,17 @@
   transition: 300ms;
   user-select: none;
 }
-.cardColumnDraggingOver {
+.columnDraggingOver {
   background: #d3d4d8;
 }
-.cardTitle {
+.title {
   padding: 8px;
   text-align: left;
   font-size: 1.25rem;
   user-select: none;
 }
 
-.cardDroppable {
+.droppable {
   transition: 300ms;
   border-radius: 5px;
   padding: 8px 8px 0 8px;

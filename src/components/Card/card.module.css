@@ -1,4 +1,4 @@
-.cardBody {
+.body {
   position: relative;
   border-radius: 5px;
   background: #fff;
@@ -6,11 +6,11 @@
   margin: 8px 0;
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
 }
-.cardBody + .cardBody {
+.body + .body {
   margin: 8px 0;
 }
 
-.cardBody:hover {
+.body:hover {
   background-color: #f4f5f7;
   border-bottom-color: rgba(9, 30, 66, 0.25);
 }
