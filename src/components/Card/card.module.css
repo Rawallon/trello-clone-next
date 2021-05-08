@@ -1,0 +1,21 @@
+.cardBody {
+  position: relative;
+  border-radius: 5px;
+  background: #fff;
+  padding: 8px;
+  margin: 8px 0;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+}
+.cardBody + .cardBody {
+  margin: 8px 0;
+}
+
+.cardBody:hover {
+  background-color: #f4f5f7;
+  border-bottom-color: rgba(9, 30, 66, 0.25);
+}
+
+.CardGhost {
+  background: red;
+  cursor: move !important;
+}
