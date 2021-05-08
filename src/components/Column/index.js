@@ -23,14 +23,11 @@ export default function Column({ title = '', id, index, children }) {
           <Droppable type="CARD" key={id} droppableId={String(id)}>
             {(provided, snapshot) => (
               <div
+                className={styles.cardDroppable}
                 style={{
-                  transition: '300ms',
-                  borderRadius: '5px',
-                  padding: '0 0 1rem 0',
-                  minHeight: '10rem',
                   backgroundColor: snapshot.isDraggingOver
                     ? 'rgba(0,0,0,0.1)'
-                    : '',
+                    : 'transparent',
                 }}
                 ref={provided.innerRef}
                 {...provided.droppableProps}>

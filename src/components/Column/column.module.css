@@ -2,7 +2,6 @@
   border: 1px solid #000;
   background: #ebecf0;
   margin: 8px;
-  padding: 8px;
   min-width: 350px;
   max-width: 350px;
   width: 100%;
@@ -19,4 +18,11 @@
   text-align: left;
   font-size: 1.25rem;
   user-select: none;
+}
+
+.cardDroppable {
+  transition: 300ms;
+  border-radius: 5px;
+  padding: 8px 8px 0 8px;
+  min-height: 10rem;
 }
