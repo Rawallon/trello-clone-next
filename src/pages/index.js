@@ -22,7 +22,6 @@ export default function Home(props) {
     ) {
       return;
     }
-    console.log(e);
     if (e.type === 'CARD') {
       moveCard(e.draggableId, e.destination.droppableId, e.destination.index);
     }
@@ -34,41 +33,39 @@ export default function Home(props) {
     <DragDropContext onDragEnd={dragEndHandle}>
       <Droppable direction="horizontal" type="COLUMN" droppableId="board">
         {(provided, snapshot) => (
-          <div className={styles.PageWrapper}>
-            <div className={styles.BoardWrapper}>
-              {snapshot.draggingOverWith}
-              {currentList.map((column, index) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  key={column.id}>
-                  {index.toString()}
-                  <Column title={column.title} id={column.id} index={index}>
-                    {currentCards
-                      .filter((item) => item.list === String(column.id))
-                      .map((item, index) => (
-                        <Draggable
-                          key={item.id}
-                          draggableId={item.id}
-                          index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              id={item.id}
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              draggable={true}>
-                              <Card>{item.name}</Card>
-                              {provided.placeholder}
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                  </Column>
-                </div>
-              ))}
-              {provided.placeholder}
-            </div>
+          <div
+            className={styles.BoardWrapper}
+            ref={provided.innerRef}
+            {...provided.droppableProps}>
+            {currentList.map((column, index) => (
+              <Column
+                title={column.title}
+                id={column.id}
+                key={column.id}
+                index={index}>
+                {currentCards
+                  .filter((item) => item.list === String(column.id))
+                  .map((item, index) => (
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}>
+                      {(provided, snapshot) => (
+                        <div
+                          id={item.id}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          draggable={true}>
+                          <Card>{item.name}</Card>
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+              </Column>
+            ))}
+            {provided.placeholder}
           </div>
         )}
       </Droppable>
