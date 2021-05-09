@@ -4,6 +4,7 @@ import {
   Droppable,
   resetServerContext,
 } from 'react-beautiful-dnd';
+import AddList from '../components/AddList';
 import Card from '../components/Card';
 import Column from '../components/Column';
 import { useCards } from '../context/CardsContext';
@@ -12,7 +13,7 @@ import styles from '../styles/Board.module.css';
 
 export default function Home(props) {
   resetServerContext();
-  const { currentList, moveList } = useList();
+  const { createList, currentList, moveList } = useList();
   const { createInitialCard, currentCards, moveCard } = useCards();
   function createCard(name, list) {
     // Todo: Verifications...
@@ -72,6 +73,7 @@ export default function Home(props) {
               </Column>
             ))}
             {provided.placeholder}
+            <AddList createList={createList} />
           </div>
         )}
       </Droppable>
