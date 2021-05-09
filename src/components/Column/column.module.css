@@ -26,3 +26,60 @@
   padding: 8px 8px 0 8px;
   min-height: 10rem;
 }
+
+.footerColumn.hidden {
+  display: none;
+}
+.footerColumn {
+  padding: 8px;
+}
+
+.footerColumn button {
+  cursor: pointer;
+  box-shadow: none;
+  width: 100%;
+  border: none;
+  border-radius: 3px;
+  padding: 8px;
+  text-align: left;
+  user-select: none;
+  transition: 300ms;
+}
+.openForm {
+  color: #5e6c84;
+}
+
+.openForm:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+  color: #172b4d;
+}
+
+.TextareaWrapper {
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgb(9 30 66 / 25%);
+  margin-bottom: 8px;
+  min-height: 60px;
+  position: relative;
+  padding: 6px 8px 2px;
+}
+
+.AutoTextarea {
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+}
+.AutoTextarea:focus {
+  outline: 0;
+}
+
+.addCard {
+  background-color: #5aac44;
+  color: #fff;
+}
+
+.addCard:hover {
+  background-color: #61bd4f;
+}
