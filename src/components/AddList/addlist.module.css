@@ -1,0 +1,64 @@
+.listAdd {
+  width: 272px;
+  color: #fff;
+  background-color: hsla(0, 0%, 100%, 0.24);
+  cursor: pointer;
+  margin: 8px 4px;
+  border-radius: 3px;
+  height: auto;
+  height: 32px;
+  padding: 4px;
+  transition: background 85ms ease-in, opacity 40ms ease-in,
+    border-color 85ms ease-in;
+}
+
+.listAdd:hover {
+  background-color: hsla(0, 0%, 100%, 0.32);
+}
+.hidden {
+  display: none !important;
+}
+
+.listAddForm {
+  background-color: #ebecf0;
+  border-radius: 3px;
+  height: auto;
+  width: 272px;
+  height: max-content;
+  margin: 8px 4px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.listAddForm input {
+  background-color: #fff;
+  box-shadow: inset 0 0 0 2px #0079bf;
+  display: block;
+  margin: 0;
+  transition: margin 85ms ease-in, background 85ms ease-in;
+  width: 100%;
+  padding: 8px 12px;
+  line-height: 20px;
+  border-radius: 3px;
+  outline: none;
+  border: none;
+  margin-bottom: 4px;
+}
+.listAddForm button {
+  cursor: pointer;
+  box-shadow: none;
+  width: 100%;
+  border: none;
+  border-radius: 3px;
+  padding: 8px;
+  text-align: left;
+  user-select: none;
+  transition: 300ms;
+  background-color: #5aac44;
+  color: #fff;
+}
+
+.listAddForm button:hover {
+  background-color: #61bd4f;
+}
