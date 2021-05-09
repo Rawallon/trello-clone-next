@@ -5,21 +5,25 @@ const cardsInitialState = [
     id: '1-card',
     name:
       'Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 ',
+    createdat: Date.now(),
     list: '1',
   },
   {
     id: '2-card',
     name: 'Text 2',
+    createdat: Date.now(),
     list: '1',
   },
   {
     id: '3-card',
     name: 'Text 3',
+    createdat: Date.now(),
     list: '1',
   },
   {
     id: '4-card',
     name: 'Text 4',
+    createdat: Date.now(),
     list: '1',
   },
 ];
@@ -42,6 +46,19 @@ export function CardsContextProvider({ children }) {
     ]);
   }
 
+  function createInitialCard(formData) {
+    const id = Math.random().toString(10).substr(2, 9);
+    setCurrentCards((prevCards) => [
+      ...prevCards,
+      {
+        id: `${id}-card`,
+        name: formData.name,
+        createdat: Date.now(),
+        list: String(formData.list + 1),
+      },
+    ]);
+  }
+
   function moveCard(cardId, toId, insertIndex) {
     const cIndex = currentCards.findIndex((c) => c.id === cardId);
     const newCards = [...currentCards];
@@ -55,6 +72,7 @@ export function CardsContextProvider({ children }) {
       value={{
         currentCards,
         putCard,
+        createInitialCard,
         moveCard,
       }}>
       {children}
