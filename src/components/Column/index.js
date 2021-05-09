@@ -3,9 +3,21 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 import AutoResizableTextarea from '../AutoResizableTextarea';
 import styles from './column.module.css';
 
-export default function Column({ title = '', id, index, children }) {
+export default function Column({
+  title = '',
+  id,
+  index,
+  createCard,
+  children,
+}) {
   const [text, setText] = useState('');
   const [showForm, setShowForm] = useState(false);
+
+  function createCardHandler() {
+    createCard(text, index);
+    setShowForm(false);
+  }
+
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -48,15 +60,14 @@ export default function Column({ title = '', id, index, children }) {
               ${showForm ? '' : styles.hidden}`}>
             <div className={styles.TextareaWrapper}>
               <AutoResizableTextarea
+                showing={showForm.toString()}
                 text={text}
                 setText={setText}
                 placeholder="Enter a title for this card..."
                 className={styles.AutoTextarea}
               />
             </div>
-            <button
-              className={styles.addCard}
-              onClick={() => setShowForm((prev) => !prev)}>
+            <button className={styles.addCard} onClick={createCardHandler}>
               Add card
             </button>
           </footer>

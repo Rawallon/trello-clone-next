@@ -13,7 +13,12 @@ import styles from '../styles/Board.module.css';
 export default function Home(props) {
   resetServerContext();
   const { currentList, moveList } = useList();
-  const { currentCards, moveCard } = useCards();
+  const { createInitialCard, currentCards, moveCard } = useCards();
+  function createCard(name, list) {
+    // Todo: Verifications...
+    if (!name || !list) return;
+    createInitialCard({ name, list });
+  }
   function dragEndHandle(e) {
     if (!e.destination) return;
     if (
@@ -39,6 +44,7 @@ export default function Home(props) {
             {...provided.droppableProps}>
             {currentList.map((column, index) => (
               <Column
+                createCard={createCard}
                 title={column.title}
                 id={column.id}
                 key={column.id}
