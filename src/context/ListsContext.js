@@ -3,19 +3,11 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const listInitialState = [
   {
     id: '1',
-    title: 'List 1',
+    title: 'Doing',
   },
   {
     id: '2',
-    title: 'List 2',
-  },
-  {
-    id: '3',
-    title: 'List 3',
-  },
-  {
-    id: '4',
-    title: 'List 4',
+    title: 'Done',
   },
 ];
 
@@ -29,7 +21,17 @@ export function ListContextProvider({ children }) {
       ...prevList,
       {
         id: String(currentList.length + 1),
-        ...formData,
+        title: formData.title,
+      },
+    ]);
+  }
+
+  function createList(title) {
+    setCurrentList((prevList) => [
+      ...prevList,
+      {
+        id: String(currentList.length + 1),
+        title,
       },
     ]);
   }
@@ -45,6 +47,7 @@ export function ListContextProvider({ children }) {
       value={{
         currentList,
         putList,
+        createList,
         moveList,
       }}>
       {children}
