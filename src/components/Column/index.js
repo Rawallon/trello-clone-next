@@ -11,13 +11,20 @@ export default function Column({
   children,
 }) {
   const [text, setText] = useState('');
+  const [shouldClearText, setShouldClearText] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   function createCardHandler() {
     createCard(text, index);
     setShowForm(false);
+    setShouldClearText(true);
   }
 
+  function onPassHandler(e) {
+    if (e.charCode === 13) {
+      createCardHandler();
+    }
+  }
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -65,6 +72,9 @@ export default function Column({
                 setText={setText}
                 placeholder="Enter a title for this card..."
                 className={styles.AutoTextarea}
+                onKeyPress={onPassHandler}
+                shouldClearText={shouldClearText}
+                setShouldClearText={setShouldClearText}
               />
             </div>
             <button className={styles.addCard} onClick={createCardHandler}>

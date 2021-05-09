@@ -8,11 +8,10 @@ export default function AutoResizableTextarea({
   className,
   onChange,
   onKeyPress,
-  created,
-  setCreated,
+  shouldClearText,
+  setShouldClearText,
 }) {
   const textAreaRef = useRef(null);
-  const { text, setText } = props;
   const [textAreaHeight, setTextAreaHeight] = useState('auto');
   const [parentHeight, setParentHeight] = useState('auto');
 
@@ -20,6 +19,11 @@ export default function AutoResizableTextarea({
     setParentHeight(`${textAreaRef.current.scrollHeight}px`);
     setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
   }, [text]);
+
+  useEffect(() => {
+    textAreaRef.current.value = '';
+    setShouldClearText(false);
+  }, [shouldClearText]);
 
   useEffect(() => {
     if (showing) {
@@ -36,6 +40,9 @@ export default function AutoResizableTextarea({
     }
   };
 
+  const onKeyPressHandler = (event) => {
+    if (onKeyPress) {
+      onKeyPress(event);
     }
   };
 
@@ -45,10 +52,10 @@ export default function AutoResizableTextarea({
         minHeight: parentHeight,
       }}>
       <textarea
-        {...props}
         placeholder={placeholder}
         className={className}
         ref={textAreaRef}
+        onKeyPress={onKeyPressHandler}
         rows={1}
         style={{
           height: textAreaHeight,
