@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "marked": "^2.0.3",
     "next": "10.2.0",
     "react": "17.0.2",
     "react-beautiful-dnd": "^13.1.0",
