@@ -72,11 +72,22 @@ export function CardsContextProvider({ children }) {
     newCards.splice(insertIndex, 0, cCard);
     setCurrentCards(newCards);
   }
+
+  function updateCardData(newData) {
+    // put request with new data
+    const cIndex = currentCards.findIndex((c) => c.id === newData.id);
+    const newCards = [...currentCards];
+    newCards.splice(cIndex, 1)[0];
+    const cCard = newData;
+    newCards.splice(cIndex, 0, cCard);
+    setCurrentCards(newCards);
+  }
   return (
     <CardsContext.Provider
       value={{
         currentCards,
         putCard,
+        updateCardData,
         createInitialCard,
         moveCard,
       }}>
