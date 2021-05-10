@@ -73,6 +73,10 @@ export function CardsContextProvider({ children }) {
     setCurrentCards(newCards);
   }
 
+  function getCard(cID) {
+    return currentCards.filter((card) => card.id === cID)[0];
+  }
+
   function updateCardData(newData) {
     // put request with new data
     const cIndex = currentCards.findIndex((c) => c.id === newData.id);
@@ -89,6 +93,7 @@ export function CardsContextProvider({ children }) {
         putCard,
         updateCardData,
         createInitialCard,
+        getCard,
         moveCard,
       }}>
       {children}
