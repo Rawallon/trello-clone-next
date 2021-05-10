@@ -8,6 +8,7 @@
   display: flex;
   /* align-items: center; */
   justify-content: center;
+  color: #172b4d;
 }
 
 .background {
@@ -25,8 +26,120 @@
   height: 100%;
   width: 50vw;
   z-index: 2;
-  background: rgba(255, 255, 255);
+  background: #f4f5f7;
 
+  position: relative;
   margin: 48px 0;
   border-radius: 3px;
+  padding: 1rem;
+}
+
+.modalBody > div {
+  margin: 8px 0;
+}
+
+.closeButton {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 40px;
+  width: 40px;
+
+  border-radius: 50%;
+  color: #42526e;
+  text-align: center;
+
+  padding: 4px;
+  margin: 4px;
+
+  user-select: none;
+  z-index: 2;
+  transition: 150ms;
+}
+
+.closeButton:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+  color: #42526e;
+}
+
+.modalBody textarea {
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+
+  height: 32px;
+  width: 97%;
+  padding: 4px 8px 4px 0;
+
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  color: inherit;
+
+  resize: none;
+  overflow: hidden;
+  transition: 250ms;
+}
+
+.modalBody textarea:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.modalBody textarea:focus {
+  background: #fff;
+  box-shadow: inset 0 0 0 2px #0079bf;
+  outline: 0;
+}
+
+.modalBody small {
+  color: #5e6c84;
+}
+.modalBody small > span {
+  color: #5e6c84;
+  text-decoration: underline;
+}
+
+.description h3 {
+  display: inline;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.description,
+.description textarea {
+  font-size: 14px;
+}
+
+.description .button:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+}
+.description .button {
+  cursor: pointer;
+  box-shadow: none;
+  border: none;
+  border-radius: 3px;
+  padding: 8px 16px;
+  text-align: left;
+  user-select: none;
+  transition: 120ms;
+}
+.button.hidden {
+  visibility: hidden !important;
+}
+.description .edit {
+  margin-left: 8px;
+  background-color: rgba(9, 30, 66, 0.04);
+}
+
+.description .save {
+  background-color: #5aac44;
+  color: #fff;
+}
+
+.description .save:hover {
+  background-color: #61bd4f;
 }
