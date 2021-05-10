@@ -42,6 +42,10 @@ export function ListContextProvider({ children }) {
     newList.splice(insertIndex, 0, newList.splice(cIndex, 1)[0]);
     setCurrentList(newList);
   }
+
+  function getList(lID) {
+    return currentList.filter((list) => list.id === lID)[0];
+  }
   return (
     <ListContext.Provider
       value={{
@@ -49,6 +53,7 @@ export function ListContextProvider({ children }) {
         putList,
         createList,
         moveList,
+        getList,
       }}>
       {children}
     </ListContext.Provider>
