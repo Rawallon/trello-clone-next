@@ -7,14 +7,18 @@ import {
 import AddList from '../components/AddList';
 import Card from '../components/Card';
 import Column from '../components/Column';
+import ModalPortal from '../components/ModalPortal';
 import { useCards } from '../context/CardsContext';
 import { useList } from '../context/ListsContext';
+import { useModal } from '../context/ModalContext';
 import styles from '../styles/Board.module.css';
 
 export default function Home(props) {
   resetServerContext();
   const { createList, currentList, moveList } = useList();
   const { createInitialCard, currentCards, moveCard } = useCards();
+  const { showModal } = useModal();
+
   function createCard(name, list) {
     // Todo: Verifications...
     if (!name || !list) return;
@@ -37,6 +41,7 @@ export default function Home(props) {
   }
   return (
     <DragDropContext onDragEnd={dragEndHandle}>
+      <ModalPortal />
       <Droppable direction="horizontal" type="COLUMN" droppableId="board">
         {(provided, snapshot) => (
           <div
@@ -60,6 +65,7 @@ export default function Home(props) {
                       {(provided, snapshot) => (
                         <div
                           id={item.id}
+                          onClick={() => showModal(item.id)}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
