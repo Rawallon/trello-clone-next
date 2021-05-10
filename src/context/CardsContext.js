@@ -5,24 +5,28 @@ const cardsInitialState = [
     id: '1-card',
     name:
       'Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 ',
+    description: '# Test',
     createdat: Date.now(),
     list: '1',
   },
   {
     id: '2-card',
     name: 'Text 2',
+    description: '# Test',
     createdat: Date.now(),
     list: '1',
   },
   {
     id: '3-card',
     name: 'Text 3',
+    description: '# Test',
     createdat: Date.now(),
     list: '1',
   },
   {
     id: '4-card',
     name: 'Text 4',
+    description: '# Test',
     createdat: Date.now(),
     list: '1',
   },
@@ -53,6 +57,7 @@ export function CardsContextProvider({ children }) {
       {
         id: `${id}-card`,
         name: formData.name,
+        description: '',
         createdat: Date.now(),
         list: String(formData.list + 1),
       },
