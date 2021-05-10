@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import AutoResizableTextarea from '../AutoResizableTextarea';
+import { PlusIcon } from '../Icons';
 import styles from './column.module.css';
 
 export default function Column({
@@ -59,7 +60,7 @@ export default function Column({
             <button
               className={styles.openForm}
               onClick={() => setShowForm((prev) => !prev)}>
-              Add card
+              <PlusIcon /> Add card
             </button>
           </footer>
           <footer
