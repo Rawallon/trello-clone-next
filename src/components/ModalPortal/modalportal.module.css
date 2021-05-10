@@ -1,0 +1,32 @@
+.modalWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.background {
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.modalBody {
+  width: 100%;
+  height: 100%;
+  width: 50vw;
+  z-index: 2;
+  background: rgba(255, 255, 255);
+
+  margin: 48px 0;
+  border-radius: 3px;
+}
