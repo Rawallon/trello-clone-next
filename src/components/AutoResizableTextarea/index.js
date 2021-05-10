@@ -7,6 +7,7 @@ export default function AutoResizableTextarea({
   placeholder,
   className,
   onChange,
+  onBlur,
   onKeyPress,
   shouldClearText,
   setShouldClearText,
@@ -21,37 +22,43 @@ export default function AutoResizableTextarea({
   }, [text]);
 
   useEffect(() => {
-    textAreaRef.current.value = '';
-    setShouldClearText(false);
-  }, [shouldClearText]);
+    if (shouldClearText) {
+      textAreaRef.current.value = '';
+      setShouldClearText(false);
+    }
 
-  useEffect(() => {
     if (showing) {
       textAreaRef.current.focus();
     }
-  }, [showing]);
-  const onChangeHandler = (event) => {
+  }, [shouldClearText, showing]);
+
+  function onChangeHandler(event) {
     setTextAreaHeight('auto');
     setParentHeight(`${textAreaRef.current.scrollHeight}px`);
-    setText(event.target.value.replace(/(?:\r\n|\r|\n)/g, ' '));
-
+    setText(event.target.value);
     if (onChange) {
       onChange(event);
     }
-  };
+  }
 
-  const onKeyPressHandler = (event) => {
+  function onKeyPressHandler(event) {
     if (onKeyPress) {
       onKeyPress(event);
     }
-  };
+  }
 
+  function onBlurHandler(event) {
+    if (onBlur) {
+      onBlur(event);
+    }
+  }
   return (
     <div
       style={{
         minHeight: parentHeight,
       }}>
       <textarea
+        defaultValue={text}
         placeholder={placeholder}
         className={className}
         ref={textAreaRef}
@@ -62,6 +69,7 @@ export default function AutoResizableTextarea({
           minHeight: '20px',
         }}
         onChange={onChangeHandler}
+        onBlur={onBlurHandler}
       />
     </div>
   );
