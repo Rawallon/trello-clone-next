@@ -15,8 +15,14 @@ import styles from '../styles/Board.module.css';
 
 export default function Home(props) {
   resetServerContext();
-  const { createList, currentList, moveList } = useList();
-  const { createInitialCard, currentCards, moveCard } = useCards();
+  const { createList, currentList, moveList, getList } = useList();
+  const {
+    createInitialCard,
+    currentCards,
+    moveCard,
+    getCard,
+    updateCardData,
+  } = useCards();
   const { showModal } = useModal();
 
   function createCard(name, list) {
@@ -41,7 +47,11 @@ export default function Home(props) {
   }
   return (
     <DragDropContext onDragEnd={dragEndHandle}>
-      <ModalPortal />
+      <ModalPortal
+        getList={getList}
+        getCard={getCard}
+        updateCardData={updateCardData}
+      />
       <Droppable direction="horizontal" type="COLUMN" droppableId="board">
         {(provided, snapshot) => (
           <div
