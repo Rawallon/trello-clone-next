@@ -16,13 +16,8 @@ import styles from '../styles/Board.module.css';
 export default function Home(props) {
   resetServerContext();
   const { createList, currentList, moveList, getList } = useList();
-  const {
-    createInitialCard,
-    currentCards,
-    moveCard,
-    getCard,
-    updateCardData,
-  } = useCards();
+  const { createInitialCard, currentCards, moveCard, getCard, updateCardData } =
+    useCards();
   const { showModal } = useModal();
 
   function createCard(name, list) {
