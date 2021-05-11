@@ -1,41 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const cardsInitialState = [
-  {
-    id: '1-card',
-    name:
-      'Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 Text 1 ',
-    description: '# Test',
-    createdat: Date.now(),
-    list: '1',
-  },
-  {
-    id: '2-card',
-    name: 'Text 2',
-    description: '# Test',
-    createdat: Date.now(),
-    list: '1',
-  },
-  {
-    id: '3-card',
-    name: 'Text 3',
-    description: '# Test',
-    createdat: Date.now(),
-    list: '1',
-  },
-  {
-    id: '4-card',
-    name: 'Text 4',
-    description: '# Test',
-    createdat: Date.now(),
-    list: '1',
-  },
-];
-
 export const CardsContext = createContext({});
 
 export function CardsContextProvider({ children }) {
-  const [currentCards, setCurrentCards] = useState(cardsInitialState);
 
   function putCard(formData) {
     const id = Math.random().toString(10).substr(2, 9);

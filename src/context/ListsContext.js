@@ -1,20 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const listInitialState = [
-  {
-    id: '1',
-    title: 'Doing',
-  },
-  {
-    id: '2',
-    title: 'Done',
-  },
-];
-
 export const ListContext = createContext({});
 
 export function ListContextProvider({ children }) {
-  const [currentList, setCurrentList] = useState(listInitialState);
 
   function putList(formData) {
     setCurrentList((prevList) => [
