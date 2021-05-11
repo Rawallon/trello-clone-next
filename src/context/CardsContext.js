@@ -3,18 +3,10 @@ import { createContext, useContext, useEffect, useState } from 'react';
 export const CardsContext = createContext({});
 
 export function CardsContextProvider({ children }) {
+  const [currentCards, setCurrentCards] = useState([]);
 
-  function putCard(formData) {
-    const id = Math.random().toString(10).substr(2, 9);
-    setCurrentCards((prevCards) => [
-      ...prevCards,
-      {
-        id: `${id}-card`,
-        ...formData,
-        createdat: Date.now(),
-        list: '1-board',
-      },
-    ]);
+  function putCards(fetchedCards) {
+    setCurrentCards(fetchedCards);
   }
 
   function createInitialCard(formData) {
@@ -57,7 +49,7 @@ export function CardsContextProvider({ children }) {
     <CardsContext.Provider
       value={{
         currentCards,
-        putCard,
+        putCards,
         updateCardData,
         createInitialCard,
         getCard,
