@@ -1,34 +1,70 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Kanban Board Next
 
-## Getting Started
+As the title suggests this is a simple kanban board, I'm designing it as a Trello-lite clone. Some functionality that are in the works are: User auth with Next-Auth, multiple boards, possibility for users to collaborate on the same board.
 
-First, run the development server:
+This project is a **Work In Progress** and everything outlined in this readme is a rough sketch that will be used as reference.
 
-```bash
-npm run dev
-# or
-yarn dev
+## User Story
+
+### New user
+
+1.  User logs in
+1.  Sees square where board is supposed to be with text "Create Board"
+1.  User clicks and a modal opens asking for new board name
+1.  User clicks on the created board and is taken to /board/:id
+1.  Board is loaded without any list or card
+1.  User starts filling with lists/cards
+
+## Schema
+
+```
+User:
+[
+username: String,
+colorPicture: String,
+password: String,
+Boards: [{ type: Schema.Types.ObjectId, ref: 'Board' }]
+]
+
+Board:
+[
+  Title: String,
+  BgColor: String,
+  Cards: Array,
+  Lists: Array
+  PermisionList: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+If a Board is in a User means he can delete it
+If a User is inside PermissionList means he can edit the cards
+MAYBE: Store cards on it own collection, that would allow for history of changes, labels, etc.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Endpoints
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+/board/id:
+{
+  Title: "My board",
+  BgColor: "EFCB68",
+  Lists: [
+  {
+    id: '1',
+    title: 'Doing',
+  },
+  {
+    id: '2',
+    title: 'Done',
+  },
+  ],
+  Cards: [
+  {
+    id: '1-card',
+    name: 'Test Card',
+    description: '# Test',
+    list: '1',
+  },
+  ...
+  ]
+}
+```
