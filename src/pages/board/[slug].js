@@ -38,7 +38,7 @@ export default function BoardSlug({ cards, lists, bgColor }) {
 
   function createCard(name, list) {
     // Todo: Verifications...
-    if (!name || !list) return;
+    if (!String(name) || !String(list)) return;
     createInitialCard({ name, list });
   }
   function dragEndHandle(e) {
