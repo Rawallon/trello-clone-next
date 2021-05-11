@@ -5,6 +5,7 @@ import marked from 'marked';
 import AutoResizableTextarea from '../AutoResizableTextarea';
 import { CloseIcon } from '../Icons';
 import styles from './modalportal.module.css';
+import FormatingHelp from '../FormatingHelp';
 
 function ModalPortal({ getCard, getList, updateCardData }) {
   const ref = useRef();
@@ -12,7 +13,7 @@ function ModalPortal({ getCard, getList, updateCardData }) {
   const [mounted, setMounted] = useState(false);
   const [cardData, setCardData] = useState([]);
   const [editingDesc, setEditingDesc] = useState(false);
-
+  const [showHelper, setShowHelper] = useState(false);
   useEffect(() => {
     ref.current = document.querySelector('#modal');
     setMounted(true);
@@ -34,16 +35,21 @@ function ModalPortal({ getCard, getList, updateCardData }) {
   if (!mounted || !cardData) return null;
   return createPortal(
     <div className={styles.modalWrapper}>
+      {showHelper ? (
+        <FormatingHelp closeHelperHandler={() => setShowHelper(false)} />
+      ) : (
+        ''
+      )}
       <div className={styles.background} onClick={hideModalHandle} />
       <div className={styles.modalBody}>
         <div className={styles.closeButton} onClick={hideModalHandle}>
           <CloseIcon />
         </div>
-        <AutoResizableTextarea
-          text={cardData.name}
-          setText={(e) => changeCardDataHandler('name', e)}
-        />
         <div>
+          <AutoResizableTextarea
+            text={cardData.name}
+            setText={(e) => changeCardDataHandler('name', e)}
+          />
           <small>
             in list <span>{getList(cardData.list).title}</span>
           </small>
@@ -65,13 +71,17 @@ function ModalPortal({ getCard, getList, updateCardData }) {
                 className={styles.textarea}
                 showing={editingDesc}
                 text={cardData.description}
-                onBlur={() => setEditingDesc(!editingDesc)}
                 setText={(e) => changeCardDataHandler('description', e)}
               />
               <button
                 className={`${styles.button} ${styles.save}`}
                 onClick={() => setEditingDesc(!editingDesc)}>
                 Save
+              </button>
+              <button
+                className={`${styles.button} ${styles.edit}`}
+                onClick={() => setShowHelper(!showHelper)}>
+                Formatting Help
               </button>
             </>
           ) : (
