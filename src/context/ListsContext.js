@@ -3,15 +3,10 @@ import { createContext, useContext, useEffect, useState } from 'react';
 export const ListContext = createContext({});
 
 export function ListContextProvider({ children }) {
+  const [currentList, setCurrentList] = useState([]);
 
-  function putList(formData) {
-    setCurrentList((prevList) => [
-      ...prevList,
-      {
-        id: String(currentList.length + 1),
-        title: formData.title,
-      },
-    ]);
+  function putLists(fetchedList) {
+    setCurrentList(fetchedList);
   }
 
   function createList(title) {
@@ -38,7 +33,7 @@ export function ListContextProvider({ children }) {
     <ListContext.Provider
       value={{
         currentList,
-        putList,
+        putLists,
         createList,
         moveList,
         getList,
