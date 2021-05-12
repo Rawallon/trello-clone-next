@@ -13,11 +13,21 @@ import { useCards } from '../../context/CardsContext';
 import { useList } from '../../context/ListsContext';
 import { useModal } from '../../context/ModalContext';
 import styles from '../../styles/Board.module.css';
+import ApiCall from '../../utils/API';
+import Link from 'next/link';
 
-export default function BoardSlug({ cards, lists, bgColor }) {
+export default function BoardSlug({
+  listId,
+  listTitle,
+  cards,
+  lists,
+  bgColor,
+}) {
   resetServerContext();
+
   const { createList, putLists, currentList, moveList, getList } = useList();
   const {
+    fetchCards,
     createInitialCard,
     putCards,
     currentCards,
@@ -35,6 +45,12 @@ export default function BoardSlug({ cards, lists, bgColor }) {
       putLists(lists);
     }
   }, [cards, lists]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      fetchCards(listId);
+    }
+  }, []);
 
   function createCard(name, list) {
     // Todo: Verifications...
@@ -67,12 +83,16 @@ export default function BoardSlug({ cards, lists, bgColor }) {
         getCard={getCard}
         updateCardData={updateCardData}
       />
+
       <Droppable direction="horizontal" type="COLUMN" droppableId="board">
         {(provided, snapshot) => (
           <div
             className={styles.BoardWrapper}
             ref={provided.innerRef}
             {...provided.droppableProps}>
+            <Link href="/">
+              <a style={{ zIndex: '123' }}>Go back</a>
+            </Link>
             {currentList.map((column, index) => (
               <Column
                 createCard={createCard}
@@ -123,11 +143,11 @@ export async function getStaticPaths() {
 
 export const getStaticProps = async (ctx) => {
   const { slug } = ctx.params;
-
-  const res = await fetch(`http://localhost:3000/board/${slug}`);
-  const data = await res.json();
+  const data = await ApiCall(`http://localhost:3000/board/${slug}`);
   return {
     props: {
+      listId: data.id,
+      listTitle: data.title,
       cards: data.cards,
       lists: data.lists,
       bgColor: data.bgcolor,
