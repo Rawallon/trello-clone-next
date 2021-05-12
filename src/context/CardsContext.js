@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
+import ApiCall from '../utils/API';
 
 export const CardsContext = createContext({});
 
@@ -9,46 +10,48 @@ export function CardsContextProvider({ children }) {
     setCurrentCards(fetchedCards);
   }
 
-  function createInitialCard(formData) {
-    const id = Math.random().toString(10).substr(2, 9);
-    setCurrentCards((prevCards) => [
-      ...prevCards,
-      {
-        id: `${id}-card`,
-        name: formData.name,
-        description: '',
-        createdat: Date.now(),
-        list: String(formData.list + 1),
-      },
-    ]);
+  async function fetchCards(id) {
+    const retApi = await ApiCall('/board/' + id, 'GET');
+    setCurrentCards(retApi.cards);
   }
 
-  function moveCard(cardId, toId, insertIndex) {
-    const cIndex = currentCards.findIndex((c) => c.id === cardId);
-    const newCards = [...currentCards];
-    const cCard = newCards.splice(cIndex, 1)[0];
-    cCard.list = toId;
-    newCards.splice(insertIndex, 0, cCard);
-    setCurrentCards(newCards);
+  async function createInitialCard(formData) {
+    const id = Math.random().toString(10).substr(2, 9);
+    const newCard = {
+      id: `${id}-card`,
+      name: formData.name,
+      description: '',
+      createdat: Date.now(),
+      list: String(formData.list),
+    };
+
+    const retApi = await ApiCall('/board/1/card', 'POST', newCard);
+    setCurrentCards(retApi);
+  }
+
+  async function moveCard(cardId, toId, insertIndex) {
+    const retApi = await ApiCall('/board/1/card', 'PATCH', {
+      cardId,
+      toId,
+      insertIndex,
+    });
+    setCurrentCards(retApi);
   }
 
   function getCard(cID) {
     return currentCards.filter((card) => card.id === cID)[0];
   }
 
-  function updateCardData(newData) {
+  async function updateCardData(newData) {
     // put request with new data
-    const cIndex = currentCards.findIndex((c) => c.id === newData.id);
-    const newCards = [...currentCards];
-    newCards.splice(cIndex, 1)[0];
-    const cCard = newData;
-    newCards.splice(cIndex, 0, cCard);
-    setCurrentCards(newCards);
+    const retApi = await ApiCall('/board/1/card', 'PUT', { newData });
+    setCurrentCards(retApi);
   }
   return (
     <CardsContext.Provider
       value={{
         currentCards,
+        fetchCards,
         putCards,
         updateCardData,
         createInitialCard,

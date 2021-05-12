@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import ApiCall from '../utils/API';
 
 export const ListContext = createContext({});
 
@@ -19,11 +20,13 @@ export function ListContextProvider({ children }) {
     ]);
   }
 
-  function moveList(listId, insertIndex) {
-    const cIndex = currentList.findIndex((c) => c.id === listId);
-    const newList = [...currentList];
-    newList.splice(insertIndex, 0, newList.splice(cIndex, 1)[0]);
-    setCurrentList(newList);
+  async function moveList(listId, insertIndex) {
+    const retApi = await ApiCall('/board/1/list', 'POST', {
+      listId,
+      insertIndex,
+    });
+    console.log(retApi);
+    setCurrentList(retApi);
   }
 
   function getList(lID) {
