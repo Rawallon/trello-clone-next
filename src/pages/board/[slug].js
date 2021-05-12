@@ -14,7 +14,7 @@ import { useList } from '../../context/ListsContext';
 import { useModal } from '../../context/ModalContext';
 import styles from '../../styles/Board.module.css';
 import ApiCall from '../../utils/API';
-import Link from 'next/link';
+import ColumnHeader from '../../components/ColumnHeader';
 
 export default function BoardSlug({
   listId,
@@ -83,16 +83,18 @@ export default function BoardSlug({
         getCard={getCard}
         updateCardData={updateCardData}
       />
-
+      <ColumnHeader
+        changeBgHandler={(value) => changeBoard('background', value, bId)}
+        changeTitleHandler={(value) => changeBoard('title', value, bId)}
+        favoriteHandler={() => console.log('hey qt')}
+        title={bTitle}
+      />
       <Droppable direction="horizontal" type="COLUMN" droppableId="board">
         {(provided, snapshot) => (
           <div
             className={styles.BoardWrapper}
             ref={provided.innerRef}
             {...provided.droppableProps}>
-            <Link href="/">
-              <a style={{ zIndex: '123' }}>Go back</a>
-            </Link>
             {currentList.map((column, index) => (
               <Column
                 createCard={createCard}
@@ -146,11 +148,11 @@ export const getStaticProps = async (ctx) => {
   const data = await ApiCall(`http://localhost:3000/board/${slug}`);
   return {
     props: {
-      listId: data.id,
-      listTitle: data.title,
+      bId: data.id,
+      bTitle: data.title,
       cards: data.cards,
       lists: data.lists,
-      bgColor: data.bgcolor,
+      bColor: data.bgcolor,
     },
   };
 };
