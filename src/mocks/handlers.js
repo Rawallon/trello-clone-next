@@ -15,6 +15,19 @@ export const handlers = [
     });
     return res(ctx.json(board));
   }),
+  rest.patch('/board/', (req, res, ctx) => {
+    const board = db.board.update({
+      where: {
+        id: {
+          equals: req.params.id,
+        },
+      },
+      data: {
+        cards: newCards,
+      },
+    });
+    return res(ctx.json(board.cards));
+  }),
   rest.get('/board/:id', (req, res, ctx) => {
     const board = db.board.findFirst({
       where: {
@@ -40,30 +53,6 @@ export const handlers = [
       return res(ctx.status(404));
     }
     return res(ctx.json(board));
-  }),
-  rest.post('/board/:id/card', (req, res, ctx) => {
-    const oldBoard = db.board.findFirst({
-      where: {
-        id: {
-          equals: req.params.id,
-        },
-      },
-    });
-    // On real back-end validation would be done
-    if (!oldBoard) {
-      return res(ctx.status(404));
-    }
-    const board = db.board.update({
-      where: {
-        id: {
-          equals: req.params.id,
-        },
-      },
-      data: {
-        cards: [...oldBoard.cards, req.body],
-      },
-    });
-    return res(ctx.json(board.cards));
   }),
   rest.patch('/board/:id/card', (req, res, ctx) => {
     const oldBoard = db.board.findFirst({
@@ -93,6 +82,59 @@ export const handlers = [
       },
     });
     return res(ctx.json(board.cards));
+  }),
+  rest.post('/board/:id/card', (req, res, ctx) => {
+    const oldBoard = db.board.findFirst({
+      where: {
+        id: {
+          equals: req.params.id,
+        },
+      },
+    });
+    // On real back-end validation would be done
+    if (!oldBoard) {
+      return res(ctx.status(404));
+    }
+    const board = db.board.update({
+      where: {
+        id: {
+          equals: req.params.id,
+        },
+      },
+      data: {
+        cards: [...oldBoard.cards, req.body],
+      },
+    });
+    return res(ctx.json(board.cards));
+  }),
+  rest.patch('/board/:id', (req, res, ctx) => {
+    // TODO: Refactor
+    const { field, value } = req.body;
+    var board;
+    if (field === 'background')
+      board = db.board.update({
+        where: {
+          id: {
+            equals: req.params.id,
+          },
+        },
+        data: {
+          bgcolor: value,
+        },
+      });
+    if (field === 'title')
+      board = db.board.update({
+        where: {
+          id: {
+            equals: req.params.id,
+          },
+        },
+        data: {
+          title: value,
+        },
+      });
+
+    return res(ctx.json(board));
   }),
   rest.put('/board/:id/card', (req, res, ctx) => {
     const oldBoard = db.board.findFirst({
