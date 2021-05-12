@@ -3,10 +3,14 @@
 }
 
 .BoardWrapper {
-  min-height: 100vh;
-  min-width: 100vw;
+  min-height: 100%;
+  min-width: 100%;
   display: inline-flex;
   user-select: none;
+}
+
+.BoardWrapper > div:first-of-type {
+  margin-left: 8px !important;
 }
 
 .backgroundHolder {
