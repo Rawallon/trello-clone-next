@@ -16,7 +16,7 @@ export default function Column({
   const [showForm, setShowForm] = useState(false);
 
   function createCardHandler() {
-    createCard(text, index);
+    createCard(text, id);
     setShowForm(false);
     setShouldClearText(true);
   }
