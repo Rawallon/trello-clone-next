@@ -21,18 +21,18 @@ This project is a **Work In Progress** and everything outlined in this readme is
 User:
 [
 username: String,
-colorPicture: String,
+colorpicture: String,
 password: String,
-Boards: [{ type: Schema.Types.ObjectId, ref: 'Board' }]
+boards: [{ type: Schema.Types.ObjectId, ref: 'Board' }]
 ]
 
 Board:
 [
-  Title: String,
-  BgColor: String,
-  Cards: Array,
-  Lists: Array
-  PermisionList: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+  title: String,
+  bgcolor: String,
+  cards: Array,
+  lists: Array
+  permisionlist: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 ]
 ```
 
