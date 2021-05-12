@@ -16,6 +16,12 @@ a {
   /* text-decoration: none; */
 }
 
+textarea,
+input {
+  color: inherit;
+  font-family: inherit;
+}
+
 * {
   box-sizing: border-box;
 }
