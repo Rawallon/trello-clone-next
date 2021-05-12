@@ -1,5 +1,5 @@
 export default async function ApiCall(url, method, body) {
-  return await fetch(`http://localhost:3000/${url}`, {
+  return await fetch(`${url}`, {
     method,
     headers: {
       'Content-Type': 'application/json',
