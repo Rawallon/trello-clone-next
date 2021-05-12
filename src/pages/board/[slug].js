@@ -5,6 +5,10 @@ import {
   Droppable,
   resetServerContext,
 } from 'react-beautiful-dnd';
+import Head from 'next/head';
+
+import styles from '../../styles/Board.module.css';
+
 import AddList from '../../components/AddList';
 import Card from '../../components/Card';
 import Column from '../../components/Column';
@@ -12,19 +16,13 @@ import ModalPortal from '../../components/ModalPortal';
 import { useCards } from '../../context/CardsContext';
 import { useList } from '../../context/ListsContext';
 import { useModal } from '../../context/ModalContext';
-import styles from '../../styles/Board.module.css';
 import ApiCall from '../../utils/API';
 import ColumnHeader from '../../components/ColumnHeader';
+import { useBoard } from '../../context/BoardContext';
 
-export default function BoardSlug({
-  listId,
-  listTitle,
-  cards,
-  lists,
-  bgColor,
-}) {
+export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
   resetServerContext();
-
+  const { putBoardData, changeBoard, title, bgColor } = useBoard();
   const { createList, putLists, currentList, moveList, getList } = useList();
   const {
     fetchCards,
@@ -39,16 +37,15 @@ export default function BoardSlug({
 
   useEffect(() => {
     if (typeof cards === 'object' && Object.keys(cards).length > 0) {
+      putBoardData(bTitle, bColor);
       putCards(cards);
-    }
-    if (typeof lists === 'object' && Object.keys(lists).length > 0) {
       putLists(lists);
     }
   }, [cards, lists]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      fetchCards(listId);
+      fetchCards(bId);
     }
   }, []);
 
@@ -74,9 +71,12 @@ export default function BoardSlug({
   }
   return (
     <DragDropContext onDragEnd={dragEndHandle}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <div
         className={styles.backgroundHolder}
-        style={{ backgroundColor: '#' + bgColor }}
+        style={{ backgroundColor: bgColor }}
       />
       <ModalPortal
         getList={getList}
