@@ -4,7 +4,7 @@ export const db = factory({
   board: {
     id: primaryKey(() => '1'),
     title: () => 'My board',
-    bgcolor: () => 'EFCB68',
+    bgcolor: () => 'rgb(210, 144, 52)',
     lists: () => [
       {
         id: '1',
