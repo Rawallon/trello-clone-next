@@ -9,15 +9,15 @@ import Head from 'next/head';
 
 import styles from '../../styles/Board.module.css';
 
-import AddList from '../../components/AddList';
-import Card from '../../components/Card';
-import Column from '../../components/Column';
-import ModalPortal from '../../components/ModalPortal';
+import AddList from '../../components/BoardPage/AddList';
+import Card from '../../components/BoardPage/Card';
+import Column from '../../components/BoardPage/Column';
+import ModalPortal from '../../components/BoardPage/ModalPortal';
 import { useCards } from '../../context/CardsContext';
 import { useList } from '../../context/ListsContext';
 import { useModal } from '../../context/ModalContext';
 import ApiCall from '../../utils/API';
-import ColumnHeader from '../../components/ColumnHeader';
+import ColumnHeader from '../../components/BoardPage/ColumnHeader';
 import { useBoard } from '../../context/BoardContext';
 
 export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {

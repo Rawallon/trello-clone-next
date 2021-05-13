@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 import styles from './columnheader.module.css';
 import AutoResizableInput from '../AutoResizableInput';
-import { CloseIcon, HomeIcon } from '../Icons';
-import { useBoard } from '../../context/BoardContext';
+import { CloseIcon, HomeIcon } from '../../Icons';
+import { useBoard } from '../../../context/BoardContext';
 
 function ColumnHeader({ title, changeTitleHandler, changeBgHandler }) {
   const { bgOptions } = useBoard();
@@ -29,8 +29,9 @@ function ColumnHeader({ title, changeTitleHandler, changeBgHandler }) {
           </div>
         </div>
         <div className={`${styles.sideBody} ${styles.sideColors}`}>
-          {bgOptions.map((color) => (
+          {bgOptions.map((color, index) => (
             <div
+              key={index}
               className={styles.colorOpt}
               style={{ backgroundColor: color }}
               onClick={() => changeBgHandler(color)}

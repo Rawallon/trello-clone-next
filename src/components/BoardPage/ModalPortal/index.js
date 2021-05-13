@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useModal } from '../../context/ModalContext';
+import { useModal } from '../../../context/ModalContext';
 import marked from 'marked';
 import AutoResizableTextarea from '../AutoResizableTextarea';
-import { CloseIcon } from '../Icons';
+import { CloseIcon } from '../../Icons';
 import styles from './modalportal.module.css';
 import FormatingHelp from '../FormatingHelp';
 

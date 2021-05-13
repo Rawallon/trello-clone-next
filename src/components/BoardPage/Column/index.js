@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import AutoResizableTextarea from '../AutoResizableTextarea';
-import { PlusIcon } from '../Icons';
+import { PlusIcon } from '../../Icons';
 import styles from './column.module.css';
 
 export default function Column({

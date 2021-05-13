@@ -1,4 +1,4 @@
-import { CloseIcon } from '../Icons';
+import { CloseIcon } from '../../Icons';
 import styles from './formatinghelp.module.css';
 
 function FormatingHelp({ closeHelperHandler }) {
