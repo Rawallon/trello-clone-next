@@ -4,6 +4,13 @@ As the title suggests this is a simple kanban board, I'm designing it as a Trell
 
 This project is a **Work In Progress** and everything outlined in this readme is a rough sketch that will be used as reference.
 
+## Demo video
+
+
+https://user-images.githubusercontent.com/39421317/118188625-0ec57080-b417-11eb-9d90-0f7016b36501.mp4
+
+
+
 ## User Story
 
 ### New user
@@ -16,6 +23,8 @@ This project is a **Work In Progress** and everything outlined in this readme is
 1.  User starts filling with lists/cards
 
 ## Schema
+
+Note: This most likely will change, for an updated view checkout the file [./src/mocks/db.js](./src/mocks/db.js)
 
 ```
 User:
@@ -42,8 +51,10 @@ MAYBE: Store cards on it own collection, that would allow for history of changes
 
 ## Endpoints
 
+For all endpoints mocked so far go to the file [./src/mocks/handlers.js](./src/mocks/handlers.js)
+
+    /board/id:
 ```
-/board/id:
 {
   Title: "My board",
   BgColor: "EFCB68",
@@ -68,3 +79,4 @@ MAYBE: Store cards on it own collection, that would allow for history of changes
   ]
 }
 ```
+
