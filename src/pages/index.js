@@ -1,10 +1,12 @@
 import Link from 'next/link';
+import AddBoardModal from '../components/BoardListing/AddBoardModal';
 import { TableIcon } from '../components/Icons';
 import styles from '../styles/BoardListing.module.css';
 
 function Home(props) {
   return (
     <div className={styles.wrapper}>
+      <AddBoardModal />
       <div className={styles.profileHolder}>
         <div>
           <div className={styles.profPicture}>R</div>
