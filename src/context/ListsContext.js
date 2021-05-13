@@ -22,18 +22,15 @@ export function ListContextProvider({ children }) {
     setCurrentList(fetchedList);
   }
 
-  function createList(title) {
-    setCurrentList((prevList) => [
-      ...prevList,
-      {
-        id: String(currentList.length + 1),
-        title,
-      },
-    ]);
+  async function createList(title) {
+    const retApi = await ApiCall('/board/1/list', 'POST', {
+      title,
+    });
+    setCurrentList(retApi);
   }
 
   async function moveList(listId, insertIndex) {
-    const retApi = await ApiCall('/board/1/list', 'POST', {
+    const retApi = await ApiCall('/board/1/list', 'PATCH', {
       listId,
       insertIndex,
     });

@@ -174,6 +174,32 @@ export const handlers = [
       },
     });
 
+    const { title } = req.body;
+
+    const newList = [...oldBoard.lists];
+    newList.push({ id: String(oldBoard.lists.length + 1), title });
+
+    const board = db.board.update({
+      where: {
+        id: {
+          equals: req.params.id,
+        },
+      },
+      data: {
+        lists: newList,
+      },
+    });
+    return res(ctx.json(board.lists));
+  }),
+  rest.patch('/board/:id/list', (req, res, ctx) => {
+    const oldBoard = db.board.findFirst({
+      where: {
+        id: {
+          equals: req.params.id,
+        },
+      },
+    });
+
     const { listId, insertIndex } = req.body;
 
     const cIndex = oldBoard.lists.findIndex((c) => c.id === listId);
