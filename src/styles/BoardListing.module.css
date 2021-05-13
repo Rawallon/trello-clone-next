@@ -1,0 +1,153 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  min-height: 100vh;
+  background-color: #fafbfc;
+}
+.profileHolder {
+  height: 100%;
+  min-height: inherit;
+  flex: 1 0 272px;
+  background: #fff;
+  box-shadow: 0 8px 16px -4px rgb(9 30 66 / 25%), 0 0 0 1px rgb(9 30 66 / 8%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.profPicture {
+  margin-top: 40px;
+  border-radius: 50%;
+  background: lightskyblue;
+  color: #fff;
+  height: 120px;
+  width: 120px;
+  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuItems {
+  user-select: none;
+  margin-top: 2rem;
+  display: grid;
+  width: 100%;
+}
+.menuItems ul,
+.menuItems li,
+.menuBottom ul,
+.menuBottom li {
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menuItems li,
+.menuBottom li {
+  padding: 6px 32px;
+  display: flex;
+  align-items: center;
+  transition: 200ms;
+}
+.menuItems li span {
+  margin-left: 8px;
+}
+.menuItems .active,
+.menuBottom li:hover {
+  background-color: #e4f0f6;
+  color: #0079bf;
+}
+
+.menuBottom {
+  user-select: none;
+  margin-top: auto;
+  margin-bottom: 16px;
+  display: grid;
+  width: 100%;
+}
+
+.boardsHolder a {
+  text-decoration: none;
+}
+.boardsHolder {
+  min-height: inherit;
+  margin: 40px 16px 0 16px;
+  flex-basis: 100%;
+}
+.boardsSection {
+  margin: 0 auto;
+  max-width: 1250px;
+  padding: 0 0 20px 0;
+}
+.boardsHeader {
+  margin-bottom: 8px;
+  display: flex;
+}
+
+.boardsHeader h3 {
+  margin-left: 8px;
+}
+
+.boardsTitle {
+  display: inline-block;
+  line-height: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.boardsList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.boardItem.addNew {
+  justify-content: center;
+  align-items: center;
+}
+.boardItem {
+  cursor: pointer;
+  border-radius: 3px;
+
+  width: 23.5%;
+  margin: 0 2% 2% 0;
+  padding: 8px;
+
+  background-color: #97a0af;
+  color: #ffffff;
+
+  line-height: 20px;
+  text-decoration: none;
+
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.boardItemDetailsAdd {
+  font-size: 1rem !important;
+  text-align: center;
+  font-weight: normal !important;
+}
+.boardItemDetailsTitle {
+  flex: 0 0 auto;
+  font-size: 16px;
+  font-weight: bold;
+  max-height: 40px;
+  width: 100%;
+  word-wrap: break-word;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+}
