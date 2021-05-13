@@ -18,9 +18,22 @@ const bgOptions = [
 export function BoardContextProvider({ children }) {
   const [title, setTitle] = useState('');
   const [bgColor, setBgColor] = useState('');
+  const [myBoards, setMyBoards] = useState([]);
+
   function putBoardData(title, bgColor) {
     setTitle(title);
     setBgColor(bgColor);
+  }
+
+  function putMyBoards(boards) {
+    setMyBoards(boards);
+  }
+  async function createNewBoard(title, bgcolor) {
+    const retApi = await ApiCall('/user/1/board', 'POST', {
+      title,
+      bgcolor,
+    });
+    setMyBoards(retApi);
   }
 
   async function changeBoard(field, value, boardId) {
@@ -34,7 +47,16 @@ export function BoardContextProvider({ children }) {
 
   return (
     <BoardContext.Provider
-      value={{ bgOptions, putBoardData, changeBoard, title, bgColor }}>
+      value={{
+        myBoards,
+        putMyBoards,
+        createNewBoard,
+        bgOptions,
+        putBoardData,
+        changeBoard,
+        title,
+        bgColor,
+      }}>
       {children}
     </BoardContext.Provider>
   );
