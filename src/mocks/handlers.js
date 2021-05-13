@@ -1,19 +1,60 @@
 import { rest } from 'msw';
 import { db } from './db';
+const cBoard = db.board.create();
+db.user.create({
+  boards: cBoard,
+});
 
-db.board.create();
 export const handlers = [
-  rest.post('/board/', (req, res, ctx) => {
-    const { title, bgcolor } = req.body;
-    const board = db.board.create({
-      id: Number(db.board.count) + 1,
-      title,
-      bgcolor,
-      cards: [],
-      lists: [],
-      permisionlist: ['1'],
+  rest.post('/user/:id/board', (req, res, ctx) => {
+    const user = db.user.findFirst({
+      where: {
+        id: {
+          equals: req.params.id,
+        },
+      },
     });
-    return res(ctx.json(board));
+    if (!user) {
+      return res(ctx.status(404));
+    }
+    const newBoard = db.board.create({
+      id: db.board.count() + 1,
+      title: req.body.title,
+      bgcolor: req.body.bgcolor,
+    });
+
+    const uUser = db.user.update({
+      where: { id: { equals: req.params.id } },
+      data: { boards: [...user.boards, newBoard] },
+    });
+
+    return res(ctx.json(uUser.boards));
+  }),
+  rest.get('/user/:id/board', (req, res, ctx) => {
+    const user = db.user.findFirst({
+      where: {
+        id: {
+          equals: req.params.id,
+        },
+      },
+    });
+    if (!user) {
+      return res(ctx.status(404));
+    }
+    return res(ctx.json(user.boards));
+  }),
+  rest.get('http://localhost:3000/user/:id', (req, res, ctx) => {
+    const user = db.user.findFirst({
+      where: {
+        id: {
+          equals: req.params.id,
+        },
+      },
+    });
+    if (!user) {
+      return res(ctx.status(404));
+    }
+    return res(ctx.json(user));
   }),
   rest.patch('/board/', (req, res, ctx) => {
     const board = db.board.update({
