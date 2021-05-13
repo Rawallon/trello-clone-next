@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-import { useList } from '../../context/ListsContext';
+import styles from './columnheader.module.css';
 import AutoResizableInput from '../AutoResizableInput';
 import { CloseIcon, HomeIcon } from '../Icons';
-import styles from './columnheader.module.css';
+import { useBoard } from '../../context/BoardContext';
 
 function ColumnHeader({ title, changeTitleHandler, changeBgHandler }) {
-  const { bgOptions } = useList();
+  const { bgOptions } = useBoard();
   const [titleHolder, setTitleHolder] = useState(title);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
