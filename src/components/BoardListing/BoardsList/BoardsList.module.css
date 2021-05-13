@@ -1,0 +1,83 @@
+.boardsHolder {
+  min-height: inherit;
+  margin: 40px 16px 0 16px;
+  flex-basis: 100%;
+}
+.boardsSection {
+  margin: 0 auto;
+  max-width: 1250px;
+  padding: 0 0 20px 0;
+}
+
+.boardsHolder a {
+  text-decoration: none;
+}
+
+.boardsHeader {
+  margin-bottom: 8px;
+  display: flex;
+}
+
+.boardsHeader h3 {
+  margin-left: 8px;
+}
+
+.boardsTitle {
+  display: inline-block;
+  line-height: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.boardsList {
+  display: flex;
+  flex-wrap: wrap;
+  user-select: none;
+}
+
+.boardItem.addNew {
+  justify-content: center;
+  align-items: center;
+}
+
+.boardItem {
+  cursor: pointer;
+  border-radius: 3px;
+
+  width: 23.5%;
+  margin: 0 2% 2% 0;
+  padding: 8px;
+
+  background-color: #97a0af;
+  color: #ffffff;
+
+  line-height: 20px;
+  text-decoration: none;
+
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.boardItemDetailsTitle {
+  flex: 0 0 auto;
+  font-size: 16px;
+  font-weight: bold;
+  max-height: 40px;
+  width: 100%;
+  word-wrap: break-word;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+}
+
+.boardItemDetailsAdd {
+  font-size: 1rem !important;
+  text-align: center;
+  font-weight: normal !important;
+}

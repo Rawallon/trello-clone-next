@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useBoard } from '../../../context/BoardContext';
 import styles from './addboardmodal.module.css';
 
-function AddBoardModal(props) {
+function AddBoardModal({ toggleModal }) {
   const { bgOptions } = useBoard();
   const ref = useRef();
   const [mounted, setMounted] = useState(false);
@@ -20,11 +20,15 @@ function AddBoardModal(props) {
   function onChangeHandle(event) {
     setInputText(event.target.value);
   }
+
+  function closeModalHandle() {
+    setInputText('');
+    toggleModal();
+  }
   return createPortal(
     <div className={styles.modalWrapper}>
-      <div className={styles.background} />
-      <div className={styles.modalBodyWrapper}>
-        <div className={styles.modalBody}>
+      <div className={styles.modalBodyWrapper} onClick={closeModalHandle}>
+        <div className={styles.modalBody} onClick={(e) => e.stopPropagation()}>
           <div className={styles.cardWrapper}>
             <div
               className={styles.fakeCard}
@@ -46,7 +50,9 @@ function AddBoardModal(props) {
           </div>
           <div>
             <button>Create board</button>
-            <button className={styles.cancelBtn}>Cancel</button>
+            <button className={styles.cancelBtn} onClick={closeModalHandle}>
+              Cancel
+            </button>
           </div>
         </div>
       </div>
