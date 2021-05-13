@@ -19,21 +19,21 @@ This project is a **Work In Progress** and everything outlined in this readme is
 
 ```
 User:
-[
+{
 username: String,
 colorpicture: String,
 password: String,
 boards: [{ type: Schema.Types.ObjectId, ref: 'Board' }]
-]
+}
 
 Board:
-[
+{
   title: String,
   bgcolor: String,
   cards: Array,
   lists: Array
   permisionlist: [{ type: Schema.Types.ObjectId, ref: 'User' }]
-]
+}
 ```
 
 If a Board is in a User means he can delete it
