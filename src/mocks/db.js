@@ -1,10 +1,17 @@
-import { factory, primaryKey } from '@mswjs/data';
+import { factory, manyOf, oneOf, primaryKey } from '@mswjs/data';
 
 export const db = factory({
+  user: {
+    id: primaryKey(() => '1'),
+    username: () => 'Rawallon Cardoso',
+    password: () => '123123',
+    boards: manyOf('board'),
+  },
   board: {
     id: primaryKey(() => '1'),
     title: () => 'My board',
     bgcolor: () => 'rgb(210, 144, 52)',
+    permissionList: manyOf('user'),
     lists: () => [
       {
         id: '1',
