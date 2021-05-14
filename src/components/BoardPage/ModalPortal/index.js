@@ -7,6 +7,8 @@ import { CloseIcon } from '../../Icons';
 import styles from './modalportal.module.css';
 import FormatingHelp from '../FormatingHelp';
 
+// TODO: Esc closes modal and formatHelp
+// TODO: Alert if user is editing and clicks away
 function ModalPortal({ getCard, getList, updateCardData }) {
   const ref = useRef();
   const { currentModal, hideModal } = useModal();
@@ -42,7 +44,6 @@ function ModalPortal({ getCard, getList, updateCardData }) {
       )}
       <div className={styles.background} onClick={hideModalHandle} />
       <div className={styles.modalBody}>
-        <div className={styles.closeButton} onClick={hideModalHandle}>
         <button
           className={styles.closeButton}
           type="button"
@@ -52,8 +53,8 @@ function ModalPortal({ getCard, getList, updateCardData }) {
         </button>
         <div>
           <AutoResizableTextarea
-            text={cardData.name}
-            setText={(e) => changeCardDataHandler('name', e)}
+            textValue={cardData.name}
+            onChange={(e) => changeCardDataHandler('name', e)}
           />
           <small>
             in list <span>{getList(cardData.list).title}</span>
@@ -74,9 +75,9 @@ function ModalPortal({ getCard, getList, updateCardData }) {
             <>
               <AutoResizableTextarea
                 className={styles.textarea}
-                showing={editingDesc}
-                text={cardData.description}
-                setText={(e) => changeCardDataHandler('description', e)}
+                shouldFocus={editingDesc}
+                textValue={cardData.description}
+                onChange={(e) => changeCardDataHandler('description', e)}
               />
               <button
                 className={`${styles.button} ${styles.save}`}
