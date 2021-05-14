@@ -31,7 +31,9 @@ function ColumnHeader({
             <CloseIcon />
           </div>
         </div>
-        <div className={`${styles.sideBody} ${styles.sideColors}`}>
+        <div
+          className={`${styles.sideBody} ${styles.sideColors}`}
+          data-testid="bg-colors">
           {bgOptions.map((color, index) => (
             <div
               key={index}

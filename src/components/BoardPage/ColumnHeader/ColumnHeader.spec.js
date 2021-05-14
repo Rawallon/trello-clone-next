@@ -1,0 +1,52 @@
+import { fireEvent, render } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
+import ColumnHeader from '.';
+
+const mockProps = {
+  title: 'Test board',
+  changeTitleHandler: jest.fn(),
+  changeBgHandler: jest.fn(),
+  bgOptions: [1, 2, 3, 4],
+};
+var columnHeader;
+beforeEach(() => {
+  columnHeader = render(<ColumnHeader {...mockProps} />);
+});
+
+it('should render properly with passed props', () => {
+  expect(columnHeader.getAllByText(mockProps.title)[0]).toBeInTheDocument();
+});
+
+it('should render number of bgOptions correctly ', () => {
+  const colours = columnHeader.getByTestId('bg-colors');
+  expect(colours).toBeInTheDocument();
+  expect(colours.childElementCount).toBe(mockProps.bgOptions.length);
+});
+
+it('should call changeBgHandler when clicking one of bgOptions ', () => {
+  const colours = columnHeader.getByTestId('bg-colors');
+  expect(colours).toBeInTheDocument();
+  fireEvent.click(colours.firstChild);
+  expect(mockProps.changeBgHandler).toHaveBeenCalled();
+});
+
+it.todo('Check if menu is not visible');
+it.todo('Check if menu is visible after click menu button');
+
+it('should have an input on edit board title', async () => {
+  expect(columnHeader.getAllByText(mockProps.title).length).toBe(1);
+  columnHeader.getByText(mockProps.title).click();
+  await columnHeader.rerender(<ColumnHeader {...mockProps} />);
+  expect(columnHeader.getByDisplayValue(mockProps.title)).toBeInTheDocument();
+});
+
+it('should have call changeTitleHandler input on edit input change', async () => {
+  expect(columnHeader.getAllByText(mockProps.title).length).toBe(1);
+  columnHeader.getByText(mockProps.title).click();
+  await columnHeader.rerender(<ColumnHeader {...mockProps} />);
+  const input = columnHeader.getByDisplayValue(mockProps.title);
+  expect(input).toBeInTheDocument();
+  const newValue = 'whatever';
+  fireEvent.change(input, { target: { value: newValue } });
+  expect(columnHeader.getByDisplayValue(newValue)).toBeInTheDocument();
+});
