@@ -63,7 +63,7 @@
 }
 
 .sideMenu {
-  display: block;
+  display: none;
   position: fixed;
   bottom: 0;
   right: 0;
@@ -83,6 +83,7 @@
 .sideMenu.display {
   box-shadow: 0 12px 24px -6px rgb(9 30 66 / 25%), 0 0 0 1px rgb(9 30 66 / 8%);
   transform: translateX(0);
+  display: block;
 }
 
 .colorOpt {
