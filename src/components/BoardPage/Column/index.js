@@ -68,9 +68,9 @@ export default function Column({
               ${showForm ? '' : styles.hidden}`}>
             <div className={styles.TextareaWrapper}>
               <AutoResizableTextarea
-                showing={showForm.toString()}
-                text={text}
-                setText={setText}
+                shouldFocus={showForm.toString()}
+                textValue={text}
+                onChange={setText}
                 placeholder="Enter a title for this card..."
                 className={styles.AutoTextarea}
                 onKeyPress={onPassHandler}

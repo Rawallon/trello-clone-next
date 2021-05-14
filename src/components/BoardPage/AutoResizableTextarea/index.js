@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 export default function AutoResizableTextarea({
-  showing,
-  text,
-  setText,
+  shouldFocus,
+  textValue,
+  onChange,
   placeholder,
   className,
-  onChange,
   onBlur,
   onKeyPress,
   shouldClearText,
@@ -19,7 +18,7 @@ export default function AutoResizableTextarea({
   useEffect(() => {
     setParentHeight(`${textAreaRef.current.scrollHeight}px`);
     setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
-  }, [text]);
+  }, [textValue]);
 
   useEffect(() => {
     if (shouldClearText) {
@@ -27,18 +26,15 @@ export default function AutoResizableTextarea({
       setShouldClearText(false);
     }
 
-    if (showing) {
+    if (shouldFocus) {
       textAreaRef.current.focus();
     }
-  }, [shouldClearText, showing]);
+  }, [shouldClearText, shouldFocus]);
 
   function onChangeHandler(event) {
     setTextAreaHeight('auto');
     setParentHeight(`${textAreaRef.current.scrollHeight}px`);
-    setText(event.target.value);
-    if (onChange) {
-      onChange(event);
-    }
+    onChange(event.target.value);
   }
 
   function onKeyPressHandler(event) {
@@ -58,7 +54,7 @@ export default function AutoResizableTextarea({
         minHeight: parentHeight,
       }}>
       <textarea
-        defaultValue={text}
+        defaultValue={textValue}
         placeholder={placeholder}
         className={className}
         ref={textAreaRef}
