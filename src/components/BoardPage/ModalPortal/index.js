@@ -43,8 +43,13 @@ function ModalPortal({ getCard, getList, updateCardData }) {
       <div className={styles.background} onClick={hideModalHandle} />
       <div className={styles.modalBody}>
         <div className={styles.closeButton} onClick={hideModalHandle}>
+        <button
+          className={styles.closeButton}
+          type="button"
+          aria-label="Close"
+          onClick={hideModalHandle}>
           <CloseIcon />
-        </div>
+        </button>
         <div>
           <AutoResizableTextarea
             text={cardData.name}

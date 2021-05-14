@@ -34,6 +34,8 @@
 }
 
 .header .closeButton {
+  background: transparent;
+  border: 0;
   cursor: pointer;
   color: #6b778c;
   padding: 4px;

@@ -35,6 +35,8 @@
 }
 
 .closeButton {
+  border: 0;
+  background: transparent;
   display: grid;
   align-items: center;
   justify-content: center;

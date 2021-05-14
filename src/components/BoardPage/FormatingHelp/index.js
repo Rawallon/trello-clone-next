@@ -6,9 +6,13 @@ function FormatingHelp({ closeHelperHandler }) {
     <div className={styles.popOver}>
       <div className={styles.header}>
         <span>Formatting help</span>
-        <div className={styles.closeButton} onClick={closeHelperHandler}>
+        <button
+          className={styles.closeButton}
+          type="button"
+          aria-label="Close"
+          onClick={closeHelperHandler}>
           <CloseIcon />
-        </div>
+        </button>
       </div>
       <div className={styles.body}>
         <p>
