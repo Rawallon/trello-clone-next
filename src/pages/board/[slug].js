@@ -22,7 +22,7 @@ import { useBoard } from '../../context/BoardContext';
 
 export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
   resetServerContext();
-  const { putBoardData, changeBoard, title, bgColor } = useBoard();
+  const { putBoardData, changeBoard, title, bgColor, bgOptions } = useBoard();
   const { createList, putLists, currentList, moveList, getList } = useList();
   const {
     fetchCards,
@@ -88,6 +88,7 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
         changeTitleHandler={(value) => changeBoard('title', value, bId)}
         favoriteHandler={() => console.log('hey qt')}
         title={bTitle}
+        bgOptions={bgOptions}
       />
       <Droppable direction="horizontal" type="COLUMN" droppableId="board">
         {(provided, snapshot) => (

@@ -4,10 +4,13 @@ import Link from 'next/link';
 import styles from './columnheader.module.css';
 import AutoResizableInput from '../AutoResizableInput';
 import { CloseIcon, HomeIcon } from '../../Icons';
-import { useBoard } from '../../../context/BoardContext';
 
-function ColumnHeader({ title, changeTitleHandler, changeBgHandler }) {
-  const { bgOptions } = useBoard();
+function ColumnHeader({
+  title,
+  changeTitleHandler,
+  changeBgHandler,
+  bgOptions,
+}) {
   const [titleHolder, setTitleHolder] = useState(title);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
