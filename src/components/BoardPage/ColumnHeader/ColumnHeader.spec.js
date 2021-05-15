@@ -30,8 +30,12 @@ it('should call changeBgHandler when clicking one of bgOptions ', () => {
   expect(mockProps.changeBgHandler).toHaveBeenCalled();
 });
 
-it.todo('Check if menu is not visible');
-it.todo('Check if menu is visible after click menu button');
+it('should add display class to menu after clicking menu button', () => {
+  const colours = columnHeader.getByTestId('bg-colors').parentNode;
+  expect(colours).not.toHaveClass('display');
+  fireEvent.click(columnHeader.getByText('Menu'));
+  expect(colours).toHaveClass('display');
+});
 
 it('should have an input on edit board title', async () => {
   expect(columnHeader.getAllByText(mockProps.title).length).toBe(1);
