@@ -41,3 +41,13 @@ it('main card should change color if color is clicked', async () => {
     component.getByPlaceholderText('Add board title').parentElement,
   ).toHaveStyle('background-color: ' + mockProps.bgOptions[1]);
 });
+
+it('should call createBoard on clicking button Create Board', () => {
+  fireEvent.click(component.getByText('Create board'));
+  expect(mockProps.createBoard).toHaveBeenCalled();
+});
+
+it('should call toggleModal on clicking button Cancel', () => {
+  fireEvent.click(component.getByText('Cancel'));
+  expect(mockProps.toggleModal).toHaveBeenCalled();
+});
