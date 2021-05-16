@@ -1,18 +1,7 @@
-import {
-  fireEvent,
-  getByDisplayValue,
-  getByText,
-  prettyDOM,
-  render,
-  screen,
-} from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import ModalPortal from '.';
-import marked from 'marked';
-import {
-  ModalContext,
-  ModalContextProvider,
-} from '../../../context/ModalContext';
+import { ModalContext } from '../../../context/ModalContext';
 
 var modalRoot = document.createElement('div');
 modalRoot.setAttribute('id', 'modal');
