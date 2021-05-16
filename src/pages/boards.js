@@ -7,7 +7,7 @@ import styles from '../styles/BoardListing.module.css';
 import ApiCall from '../utils/API';
 
 function BoardListing({ boards, username }) {
-  const { myBoards, putMyBoards, createNewBoard } = useBoard();
+  const { bgOptions, myBoards, putMyBoards, createNewBoard } = useBoard();
   const [isCreateModal, setIsCreateModal] = useState(false);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ function BoardListing({ boards, username }) {
     <div className={styles.wrapper}>
       {isCreateModal ? (
         <AddBoardModal
+          bgOptions={bgOptions}
           toggleModal={toggleModal}
           createBoard={createBoardHandle}
         />

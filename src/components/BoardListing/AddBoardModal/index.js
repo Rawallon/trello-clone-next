@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useBoard } from '../../../context/BoardContext';
 import styles from './addboardmodal.module.css';
 
-function AddBoardModal({ toggleModal, createBoard }) {
-  const { bgOptions } = useBoard();
+function AddBoardModal({ toggleModal, createBoard, bgOptions }) {
   const ref = useRef();
   const [mounted, setMounted] = useState(false);
   const [currentColor, setCurrentColor] = useState(bgOptions[0]);
