@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, prettyDOM, render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import AutoResizableInput from '.';
 
@@ -47,4 +47,11 @@ it('should have focus is shouldFocus is true', async () => {
   propsMock.shouldFocus = true;
   await component.rerender(<AutoResizableInput {...propsMock} />);
   expect(input).toHaveFocus();
+});
+
+it('On key press should call OnKeyPress prop', async () => {
+  const input = component.getByDisplayValue(propsMock.textValue);
+  fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
+
+  expect(propsMock.onKeyPress).toHaveBeenCalled();
 });
