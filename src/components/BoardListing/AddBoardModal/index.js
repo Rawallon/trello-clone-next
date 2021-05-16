@@ -43,7 +43,7 @@ function AddBoardModal({ toggleModal, createBoard, bgOptions }) {
                 placeholder="Add board title"
               />
             </div>
-            <div className={styles.colorHolder}>
+            <div data-testid="color-list" className={styles.colorHolder}>
               {bgOptions.map((color, index) => (
                 <div
                   key={index}
