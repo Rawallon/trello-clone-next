@@ -48,11 +48,13 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
       fetchCards(bId);
     }
   }, []);
-
+  function updateCardHandler (cardData){
+    updateCardData(bId, cardData)
+  }
   function createCard(name, list) {
     // Todo: Verifications...
     if (!String(name) || !String(list)) return;
-    createInitialCard({ name, list });
+    createInitialCard(bId,{ name, list });
   }
   function dragEndHandle(e) {
     if (!e.destination) return;
@@ -63,11 +65,14 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
       return;
     }
     if (e.type === 'CARD') {
-      moveCard(e.draggableId, e.destination.droppableId, e.destination.index);
+      moveCard(bId, e.draggableId, e.destination.droppableId, e.destination.index);
     }
     if (e.type === 'COLUMN') {
-      moveList(e.draggableId, e.destination.index);
+      moveList(bId, e.draggableId, e.destination.index);
     }
+  }
+  function createListHandle(listData){
+    createList(bId, listData);
   }
   return (
     <DragDropContext onDragEnd={dragEndHandle}>
@@ -81,7 +86,7 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
       <ModalPortal
         getList={getList}
         getCard={getCard}
-        updateCardData={updateCardData}
+        updateCardData={updateCardHandler}
       />
       <ColumnHeader
         changeBgHandler={(value) => changeBoard('background', value, bId)}
@@ -127,7 +132,7 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
               </Column>
             ))}
             {provided.placeholder}
-            <AddList createList={createList} />
+            <AddList createList={createListHandle} />
           </div>
         )}
       </Droppable>
@@ -138,9 +143,9 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
 export async function getStaticPaths() {
   return {
     paths: [
-      { params: { slug: '1' } }, // See the "paths" section below
+      { params: { slug: '1' } },
     ],
-    fallback: 'blocking', // See the "fallback" section below
+    fallback: 'blocking',
   };
 }
 

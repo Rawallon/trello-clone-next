@@ -10,15 +10,15 @@ export function ListContextProvider({ children }) {
     setCurrentList(fetchedList);
   }
 
-  async function createList(title) {
-    const retApi = await ApiCall('/board/1/list', 'POST', {
+  async function createList(boardId, title) {
+    const retApi = await ApiCall(`/board/${boardId}/list`, 'POST', {
       title,
     });
     setCurrentList(retApi);
   }
 
-  async function moveList(listId, insertIndex) {
-    const retApi = await ApiCall('/board/1/list', 'PATCH', {
+  async function moveList(boardId, listId, insertIndex) {
+    const retApi = await ApiCall(`/board/${boardId}/list`, 'PATCH', {
       listId,
       insertIndex,
     });

@@ -15,7 +15,7 @@ export function CardsContextProvider({ children }) {
     setCurrentCards(retApi.cards);
   }
 
-  async function createInitialCard(formData) {
+  async function createInitialCard(boardId, formData) {
     const id = Math.random().toString(10).substr(2, 9);
     const newCard = {
       id: `${id}-card`,
@@ -25,12 +25,12 @@ export function CardsContextProvider({ children }) {
       list: String(formData.list),
     };
 
-    const retApi = await ApiCall('/board/1/card', 'POST', newCard);
+    const retApi = await ApiCall(`/board/${boardId}/card`, 'POST', newCard);
     setCurrentCards(retApi);
   }
 
-  async function moveCard(cardId, toId, insertIndex) {
-    const retApi = await ApiCall('/board/1/card', 'PATCH', {
+  async function moveCard(boardId, cardId, toId, insertIndex) {
+    const retApi = await ApiCall(`/board/${boardId}/card`, 'PATCH', {
       cardId,
       toId,
       insertIndex,
@@ -42,9 +42,8 @@ export function CardsContextProvider({ children }) {
     return currentCards.filter((card) => card.id === cID)[0];
   }
 
-  async function updateCardData(newData) {
-    // put request with new data
-    const retApi = await ApiCall('/board/1/card', 'PUT', { newData });
+  async function updateCardData(boardId, newData) {
+    const retApi = await ApiCall(`/board/${boardId}/card`, 'PUT', { newData });
     setCurrentCards(retApi);
   }
   return (
