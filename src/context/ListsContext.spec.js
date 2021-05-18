@@ -25,11 +25,10 @@ const TestComponent = () => {
         }></button>
       <button
         data-testid="createList"
-        onClick={() => createList('Test')}></button>
+        onClick={() => createList(1, 'Test')}></button>
       <button
         data-testid="moveList"
-        onClick={() => moveList(String(1), Number(1))}></button>
-      <button data-testid="getList" onClick={() => getList()}></button>
+        onClick={() => moveList(1, '1', 1)}></button>
     </div>
   );
 };
@@ -75,7 +74,7 @@ it('should move list poisiton when using moveList', async () => {
   expect(await component.findByText('DoneDoing')).toBeInTheDocument();
 });
 
-it('should add to list when calling creatList', async () => {
+it('should add to list when calling createList', async () => {
   expect(component.getByTestId('value').textContent).toBe('');
   userEvent.click(component.getByTestId('createList'));
   expect(await component.findByText('DoneDoingTest')).toBeInTheDocument();
