@@ -3,11 +3,17 @@ import userEvent from '@testing-library/user-event';
 import { server } from '../mocks/server';
 import '@testing-library/jest-dom/extend-expect';
 import { ListContextProvider, useList } from './ListsContext';
+import { useState } from 'react';
 
 const TestComponent = () => {
   const { currentList, putLists, createList, moveList, getList } = useList();
+  const [gottenList, setGottenList] = useState(null);
+  function runGetList() {
+    setGottenList(getList('1'));
+  }
   return (
     <div>
+      <div data-testid="gList">{gottenList?.title}</div>
       <div data-testid="value">{currentList.map((list) => list.title)}</div>
       <button
         data-testid="putLists"
@@ -29,6 +35,7 @@ const TestComponent = () => {
       <button
         data-testid="moveList"
         onClick={() => moveList(1, '1', 1)}></button>
+      <button data-testid="getList" onClick={runGetList}></button>
     </div>
   );
 };
@@ -78,4 +85,11 @@ it('should add to list when calling createList', async () => {
   expect(component.getByTestId('value').textContent).toBe('');
   userEvent.click(component.getByTestId('createList'));
   expect(await component.findByText('DoneDoingTest')).toBeInTheDocument();
+});
+
+it('should return a single list after runing getList', async () => {
+  expect(component.getByTestId('value').textContent).toBe('');
+  userEvent.click(component.getByTestId('putLists'));
+  userEvent.click(component.getByTestId('getList'));
+  expect(await component.findByText('Doing')).toBeInTheDocument();
 });
