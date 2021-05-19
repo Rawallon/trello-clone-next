@@ -48,13 +48,13 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
       fetchCards(bId);
     }
   }, []);
-  function updateCardHandler (cardData){
-    updateCardData(bId, cardData)
+  function updateCardHandler(cardData) {
+    updateCardData(bId, cardData);
   }
   function createCard(name, list) {
     // Todo: Verifications...
     if (!String(name) || !String(list)) return;
-    createInitialCard(bId,{ name, list });
+    createInitialCard(bId, { name, list });
   }
   function dragEndHandle(e) {
     if (!e.destination) return;
@@ -65,13 +65,18 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
       return;
     }
     if (e.type === 'CARD') {
-      moveCard(bId, e.draggableId, e.destination.droppableId, e.destination.index);
+      moveCard(
+        bId,
+        e.draggableId,
+        e.destination.droppableId,
+        e.destination.index,
+      );
     }
     if (e.type === 'COLUMN') {
       moveList(bId, e.draggableId, e.destination.index);
     }
   }
-  function createListHandle(listData){
+  function createListHandle(listData) {
     createList(bId, listData);
   }
   return (
@@ -89,8 +94,8 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
         updateCardData={updateCardHandler}
       />
       <ColumnHeader
-        changeBgHandler={(value) => changeBoard('background', value, bId)}
-        changeTitleHandler={(value) => changeBoard('title', value, bId)}
+        changeBgHandler={(value) => changeBoard(bId, 'background', value)}
+        changeTitleHandler={(value) => changeBoard(bId, 'title', value)}
         favoriteHandler={() => console.log('hey qt')}
         title={bTitle}
         bgOptions={bgOptions}
@@ -142,9 +147,7 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
 
 export async function getStaticPaths() {
   return {
-    paths: [
-      { params: { slug: '1' } },
-    ],
+    paths: [{ params: { slug: '1' } }],
     fallback: 'blocking',
   };
 }

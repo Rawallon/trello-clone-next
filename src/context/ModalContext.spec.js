@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { ModalContextProvider, useModal } from './ModalContext';
 
@@ -12,10 +12,8 @@ const TestComponent = () => {
     </div>
   );
 };
-let component;
 beforeEach(() => {
-  component = render(
-    // No need to cleanup since context is re-created each time
+  render(
     <ModalContextProvider>
       <TestComponent />
     </ModalContextProvider>,
@@ -23,19 +21,19 @@ beforeEach(() => {
 });
 
 it('currentModal initial value should be null', () => {
-  expect(component.getByTestId('value').textContent).toBe('null');
+  expect(screen.getByTestId('value')).toHaveTextContent('null');
 });
 
 it('currentModal value should be set to true after clicking showModal button', () => {
-  expect(component.getByTestId('value').textContent).toBe('null');
-  fireEvent.click(component.getByTestId('showModal'));
-  expect(component.getByTestId('value').textContent).toBe('true');
+  expect(screen.getByTestId('value')).toHaveTextContent('null');
+  fireEvent.click(screen.getByTestId('showModal'));
+  expect(screen.getByTestId('value')).toHaveTextContent('true');
 });
 
 it('currentModal value should be set to null after clicking hideModal button', () => {
-  expect(component.getByTestId('value').textContent).toBe('null');
-  fireEvent.click(component.getByTestId('showModal'));
-  expect(component.getByTestId('value').textContent).toBe('true');
-  fireEvent.click(component.getByTestId('hideModal'));
-  expect(component.getByTestId('value').textContent).toBe('null');
+  expect(screen.getByTestId('value')).toHaveTextContent('null');
+  fireEvent.click(screen.getByTestId('showModal'));
+  expect(screen.getByTestId('value')).toHaveTextContent('true');
+  fireEvent.click(screen.getByTestId('hideModal'));
+  expect(screen.getByTestId('value')).toHaveTextContent('null');
 });

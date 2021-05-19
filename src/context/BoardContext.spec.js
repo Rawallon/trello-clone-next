@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { server } from '../mocks/server';
 import '@testing-library/jest-dom/extend-expect';
 import { BoardContextProvider, useBoard } from './BoardContext';
@@ -48,14 +48,13 @@ const TestComponent = () => {
       <button
         data-testid="createNewBoard"
         onClick={() =>
-          createNewBoard(1, 'New Board', 'rgb(0, 174, 204)')
+          createNewBoard('New Board', 'rgb(0, 174, 204)')
         }></button>
     </div>
   );
 };
-let component;
 beforeEach(() => {
-  component = render(
+  render(
     <BoardContextProvider>
       <TestComponent />
     </BoardContextProvider>,
@@ -75,38 +74,34 @@ afterAll(() => {
 });
 
 it('currentList initial value should be an empty values but bgOptions', () => {
-  expect(component.getByTestId('bgOptions').childElementCount).toBeGreaterThan(
-    0,
-  );
-  expect(component.getByTestId('bgColor')).toHaveTextContent('');
-  expect(component.getByTestId('title')).toHaveTextContent('');
-  expect(component.getByTestId('myBoards')).toHaveTextContent('');
+  expect(screen.getByTestId('bgOptions').childElementCount).toBeGreaterThan(0);
+  expect(screen.getByTestId('bgColor')).toHaveTextContent('');
+  expect(screen.getByTestId('title')).toHaveTextContent('');
+  expect(screen.getByTestId('myBoards')).toHaveTextContent('');
 });
 
 it('should define board title and bgColor when runing putBoardData function', () => {
-  fireEvent.click(component.getByTestId('putBoardData'));
-  expect(component.getByTestId('title')).toHaveTextContent('Test Board');
-  expect(component.getByTestId('bgColor')).toHaveTextContent('#000');
+  fireEvent.click(screen.getByTestId('putBoardData'));
+  expect(screen.getByTestId('title')).toHaveTextContent('Test Board');
+  expect(screen.getByTestId('bgColor')).toHaveTextContent('#000');
 });
 
 it('should define update board title when runing changeBoard function', async () => {
-  fireEvent.click(component.getByTestId('changeBoardTitle'));
-  expect(await component.findByText('Tested Board')).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId('changeBoardTitle'));
+  expect(await screen.findByText('Tested Board')).toBeInTheDocument();
 });
 
 it('should define update board bgColor when runing changeBoard function', async () => {
-  fireEvent.click(component.getByTestId('changeBoardBg'));
-  expect(await component.findByText('#fff')).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId('changeBoardBg'));
+  expect(await screen.findByText('#fff')).toBeInTheDocument();
 });
 
 it('should add whatever param is sent to putMyBoards as myBoards state', () => {
-  fireEvent.click(component.getByTestId('putMyBoards'));
-  expect(component.getByTestId('myBoards').childElementCount).toBeGreaterThan(
-    1,
-  );
+  fireEvent.click(screen.getByTestId('putMyBoards'));
+  expect(screen.getByTestId('myBoards').childElementCount).toBeGreaterThan(1);
 });
 
 it('should add a new board to end when runing createNewBoard', async () => {
-  fireEvent.click(component.getByTestId('createNewBoard'));
-  expect(await component.findByText('New Board')).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId('createNewBoard'));
+  expect(await screen.findByText('New Board')).toBeInTheDocument();
 });

@@ -28,15 +28,15 @@ export function BoardContextProvider({ children }) {
   function putMyBoards(boards) {
     setMyBoards(boards);
   }
-  async function createNewBoard(title, bgcolor) {
-    const retApi = await ApiCall('/user/1/board', 'POST', {
+  async function createNewBoard(boardId, title, bgcolor) {
+    const retApi = await ApiCall(`/user/${boardId}/board`, 'POST', {
       title,
       bgcolor,
     });
     setMyBoards(retApi);
   }
 
-  async function changeBoard(field, value, boardId) {
+  async function changeBoard(boardId, field, value) {
     const retApi = await ApiCall('/board/' + boardId, 'PATCH', {
       field: field,
       value: value,
