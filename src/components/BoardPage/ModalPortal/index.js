@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useModal } from '../../../context/ModalContext';
 import marked from 'marked';
@@ -7,31 +7,49 @@ import { CloseIcon } from '../../Icons';
 import styles from './modalportal.module.css';
 import FormatingHelp from '../FormatingHelp';
 
-// TODO: Esc closes modal and formatHelp
-// TODO: Alert if user is editing and clicks away
 function ModalPortal({ getCard, getList, updateCardData }) {
   const ref = useRef();
   const { currentModal, hideModal } = useModal();
   const [mounted, setMounted] = useState(false);
-  const [cardData, setCardData] = useState([]);
+  const [cardData, setCardData] = useState(null);
   const [editingDesc, setEditingDesc] = useState(false);
   const [showHelper, setShowHelper] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
   useEffect(() => {
     ref.current = document.querySelector('#modal');
     setMounted(true);
   }, []);
+
   useEffect(() => {
-    setCardData(getCard(currentModal));
-  }, [currentModal]);
+    if (currentModal) {
+      setCardData(getCard(currentModal));
+      window.addEventListener('keydown', onKeyDown);
+    } else {
+      window.removeEventListener('keydown', onKeyDown);
+      setCardData(null);
+    }
+  }, [currentModal, mounted]);
+
+  const onKeyDown = useCallback((event) => {
+    if (event.key === 'Escape') {
+      hideModalHandle();
+    }
+  }, []);
 
   function changeCardDataHandler(field, value) {
+    if (!showAlert) {
+      setShowAlert(true);
+    }
     setCardData((prevValue) => ({ ...prevValue, [field]: value }));
   }
 
   function hideModalHandle() {
-    setEditingDesc(false);
+    // setEditingDesc(false);
+    if (window.confirm('Do you want to save your changes?')) {
+      updateCardData(cardData);
+    }
     hideModal();
-    updateCardData(cardData);
   }
 
   if (!mounted || !cardData) return null;
