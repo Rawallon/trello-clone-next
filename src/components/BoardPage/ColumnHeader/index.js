@@ -25,11 +25,11 @@ function ColumnHeader({
       <div className={`${styles.sideMenu} ${isMenuOpen ? styles.display : ''}`}>
         <div className={styles.sideHeader}>
           <span>Change Color</span>
-          <div
+          <button
             className={styles.closeButton}
             onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <CloseIcon />
-          </div>
+          </button>
         </div>
         <div
           className={`${styles.sideBody} ${styles.sideColors}`}

@@ -12,7 +12,7 @@ it('should render properly', () => {
   expect(addList.getByText('Add list')).toBeInTheDocument();
 });
 
-it('Input shoud initially hidden', () => {
+it('Input shoud initially ', () => {
   expect(addList.getByText('Add new list')).toBeInTheDocument();
   expect(addList.getByRole('textbox', { hidden: true })).toBeInTheDocument();
 });

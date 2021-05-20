@@ -1,4 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 import ColumnHeader from '.';
 
@@ -37,6 +38,15 @@ it('should add display class to menu after clicking menu button', () => {
   expect(colours).toHaveClass('display');
 });
 
+it('should remove display class on click close button', async () => {
+  const colours = columnHeader.getByTestId('bg-colors').parentNode;
+  expect(colours).not.toHaveClass('display');
+  fireEvent.click(columnHeader.getByText('Menu'));
+  expect(colours).toHaveClass('display');
+  fireEvent.click(columnHeader.getByRole('button', { name: '' }));
+  expect(colours).not.toHaveClass('display');
+});
+
 it('should have an input on edit board title', async () => {
   expect(columnHeader.getAllByText(mockProps.title).length).toBe(1);
   columnHeader.getByText(mockProps.title).click();
@@ -53,4 +63,14 @@ it('should have call changeTitleHandler input on edit input change', async () =>
   const newValue = 'whatever';
   fireEvent.change(input, { target: { value: newValue } });
   expect(columnHeader.getByDisplayValue(newValue)).toBeInTheDocument();
+});
+
+it('should have call changeTitleHandler input on edit blur', async () => {
+  expect(columnHeader.getAllByText(mockProps.title).length).toBe(1);
+  columnHeader.getByText(mockProps.title).click();
+  const input = await columnHeader.findByDisplayValue(mockProps.title);
+  expect(input).toBeInTheDocument();
+  input.focus();
+  input.blur();
+  expect(mockProps.changeTitleHandler).toHaveBeenCalled();
 });
