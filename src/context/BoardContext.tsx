@@ -1,9 +1,29 @@
 import { createContext, useContext, useState } from 'react';
 import ApiCall from '../utils/API';
+import { Card } from './CardsContext';
+import { List } from './ListsContext';
 
-export const BoardContext = createContext({});
+export interface Board {
+  id: string;
+  title: string;
+  bgcolor: string;
+  lists: List;
+  cards: Card;
+}
 
-const bgOptions = [
+interface BoardContextData {
+  myBoards: Board[];
+  bgOptions: string[];
+  title: string;
+  bgColor: string;
+  putMyBoards: (boards: Board[]) => void;
+  createNewBoard: (title: string, bgcolor: string) => void;
+  putBoardData: (title: string, bgcolor: string) => void;
+  changeBoard: (boardId: string, field: string, value: string) => void;
+}
+export const BoardContext = createContext({} as BoardContextData);
+
+const bgOptions: string[] = [
   'rgb(0, 121, 191)',
   'rgb(210, 144, 52)',
   'rgb(81, 152, 57)',
@@ -20,24 +40,24 @@ export function BoardContextProvider({ children }) {
   const [bgColor, setBgColor] = useState('');
   const [myBoards, setMyBoards] = useState([]);
 
-  function putBoardData(title, bgColor) {
+  function putBoardData(title: string, bgColor: string) {
     setTitle(title);
     setBgColor(bgColor);
   }
 
-  function putMyBoards(boards) {
+  function putMyBoards(boards: any[]) {
     setMyBoards(boards);
   }
-  async function createNewBoard(title, bgcolor) {
+  async function createNewBoard(title: string, bgColor: string) {
     const userId = 1;
     const retApi = await ApiCall(`/user/${userId}/board`, 'POST', {
       title,
-      bgcolor,
+      bgColor,
     });
     setMyBoards(retApi);
   }
 
-  async function changeBoard(boardId, field, value) {
+  async function changeBoard(boardId: string, field: string, value: string) {
     const retApi = await ApiCall('/board/' + boardId, 'PATCH', {
       field: field,
       value: value,
@@ -50,13 +70,13 @@ export function BoardContextProvider({ children }) {
     <BoardContext.Provider
       value={{
         myBoards,
-        putMyBoards,
-        createNewBoard,
         bgOptions,
-        putBoardData,
-        changeBoard,
         title,
         bgColor,
+        putMyBoards,
+        createNewBoard,
+        putBoardData,
+        changeBoard,
       }}>
       {children}
     </BoardContext.Provider>

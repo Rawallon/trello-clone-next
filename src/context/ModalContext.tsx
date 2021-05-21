@@ -1,11 +1,17 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useState } from 'react';
 
-export const ModalContext = createContext({});
+interface ModalContextData {
+  currentModal: string;
+  showModal: (cId: string) => void;
+  hideModal: () => void;
+}
+
+export const ModalContext = createContext({} as ModalContextData);
 
 export function ModalContextProvider({ children }) {
   const [display, setDisplay] = useState(null);
 
-  function showModal(cId) {
+  function showModal(cId: string) {
     setDisplay(cId);
   }
 
