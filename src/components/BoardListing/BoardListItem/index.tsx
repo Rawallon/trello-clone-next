@@ -1,9 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
+import styles from './boardlistitem.module.css';
 
-import styles from './BoardListItem.module.css';
-
-export default function BoardListItem({ link, title, color }) {
+interface BoardListItemProps {
+  link: string;
+  title: string;
+  color: string;
+}
+export default function BoardListItem({
+  link,
+  title,
+  color,
+}: BoardListItemProps) {
   return (
     <Link href={link}>
       <a className={styles.boardItem} style={{ backgroundColor: color }}>

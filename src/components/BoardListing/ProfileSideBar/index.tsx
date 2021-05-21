@@ -1,7 +1,11 @@
 import { TableIcon } from '../../Icons';
 import styles from './ProfileSideBar.module.css';
 
-function ProfileSideBar({ username }) {
+interface ProfileSideBar {
+  username: string;
+}
+
+function ProfileSideBar({ username }: ProfileSideBar) {
   return (
     <div className={styles.profileHolder}>
       <div>

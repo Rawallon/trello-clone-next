@@ -4,7 +4,12 @@ import BoardListItem from '../BoardListItem';
 import { TableIcon } from '../../Icons';
 import styles from './BoardsList.module.css';
 
-export default function BoardsList({ boards, showModal }) {
+interface BoardsList {
+  boards: any[];
+  showModal: () => void;
+}
+
+export default function BoardsList({ boards, showModal }: BoardsList) {
   return (
     <div className={styles.boardsHolder}>
       <div className={styles.boardsSection}>

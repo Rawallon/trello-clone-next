@@ -1,8 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './addboardmodal.module.css';
 
-function AddBoardModal({ toggleModal, createBoard, bgOptions }) {
+interface AddBoardModalProps {
+  toggleModal: () => void;
+  createBoard: (title: string, bgcolor: string) => void;
+  bgOptions: string[];
+}
+
+function AddBoardModal({
+  toggleModal,
+  createBoard,
+  bgOptions,
+}: AddBoardModalProps) {
   const ref = useRef();
   const [mounted, setMounted] = useState(false);
   const [currentColor, setCurrentColor] = useState(bgOptions[0]);
@@ -15,8 +25,8 @@ function AddBoardModal({ toggleModal, createBoard, bgOptions }) {
 
   if (!mounted) return null;
 
-  function onChangeHandle(event) {
-    setInputText(event.target.value);
+  function onChangeHandle(event: SyntheticEvent) {
+    setInputText((event.target as HTMLInputElement).value);
   }
 
   function closeModalHandle() {
