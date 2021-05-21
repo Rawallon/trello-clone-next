@@ -2,9 +2,14 @@ import { useEffect, useState } from 'react';
 import AddBoardModal from '../components/BoardListing/AddBoardModal';
 import BoardsList from '../components/BoardListing/BoardsList';
 import ProfileSideBar from '../components/BoardListing/ProfileSideBar';
-import { useBoard } from '../context/BoardContext';
+import { Board, useBoard } from '../context/BoardContext';
 import styles from '../styles/BoardListing.module.css';
 import ApiCall from '../utils/API';
+
+interface apiReturn {
+  username: any;
+  boards: Board[];
+}
 
 function BoardListing({ boards, username }) {
   const { bgOptions, myBoards, putMyBoards, createNewBoard } = useBoard();
@@ -44,7 +49,7 @@ function BoardListing({ boards, username }) {
 export default BoardListing;
 
 export const getStaticProps = async (ctx) => {
-  const data = await ApiCall(`http://localhost:3000/user/1`);
+  const data: apiReturn = await ApiCall(`http://localhost:3000/user/1`);
   return {
     props: {
       boards: data.boards,

@@ -13,12 +13,13 @@ import AddList from '../../components/BoardPage/AddList';
 import Card from '../../components/BoardPage/Card';
 import Column from '../../components/BoardPage/Column';
 import ModalPortal from '../../components/BoardPage/ModalPortal';
-import { useCards } from '../../context/CardsContext';
+import { Card as ICard, useCards } from '../../context/CardsContext';
 import { useList } from '../../context/ListsContext';
 import { useModal } from '../../context/ModalContext';
 import ApiCall from '../../utils/API';
 import ColumnHeader from '../../components/BoardPage/ColumnHeader';
-import { useBoard } from '../../context/BoardContext';
+import { useBoard, Board } from '../../context/BoardContext';
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
   resetServerContext();
@@ -48,15 +49,15 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
       fetchCards(bId);
     }
   }, []);
-  function updateCardHandler(cardData) {
+  function updateCardHandler(cardData: ICard) {
     updateCardData(bId, cardData);
   }
-  function createCard(name, list) {
+  function createCard(name: string, list: string) {
     // Todo: Verifications...
     if (!String(name) || !String(list)) return;
     createInitialCard(bId, { name, list });
   }
-  function dragEndHandle(e) {
+  function dragEndHandle(e: any) {
     if (!e.destination) return;
     if (
       e.source.droppableId === e.destination.droppableId &&
@@ -76,7 +77,7 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
       moveList(bId, e.draggableId, e.destination.index);
     }
   }
-  function createListHandle(listData) {
+  function createListHandle(listData: string) {
     createList(bId, listData);
   }
   return (
@@ -96,7 +97,6 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
       <ColumnHeader
         changeBgHandler={(value) => changeBoard(bId, 'background', value)}
         changeTitleHandler={(value) => changeBoard(bId, 'title', value)}
-        favoriteHandler={() => console.log('hey qt')}
         title={bTitle}
         bgOptions={bgOptions}
       />
@@ -128,7 +128,7 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           draggable={true}>
-                          <Card>{item.name}</Card>
+                          <Card id={item.id}>{item.name}</Card>
                           {provided.placeholder}
                         </div>
                       )}
@@ -145,16 +145,16 @@ export default function BoardSlug({ bId, bTitle, cards, lists, bColor }) {
   );
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [{ params: { slug: '1' } }],
     fallback: 'blocking',
   };
-}
+};
 
-export const getStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const { slug } = ctx.params;
-  const data = await ApiCall(`http://localhost:3000/board/${slug}`);
+  const data: Board = await ApiCall(`http://localhost:3000/board/${slug}`);
   return {
     props: {
       bId: data.id,
