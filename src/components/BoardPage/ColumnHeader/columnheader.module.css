@@ -136,3 +136,7 @@
   flex: 1 0 25%;
   margin: 4px;
 }
+
+.flexGrow{
+  flex-grow: 1;
+}

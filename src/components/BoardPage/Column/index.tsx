@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import AutoResizableTextarea from '../AutoResizableTextarea';
 import { PlusIcon } from '../../Icons';
 import styles from './column.module.css';
+
+interface ColumnProps {
+  title: string;
+  id: string;
+  index: number;
+  createCard: (value: string, id: string) => void;
+  children: ReactNode;
+}
 
 export default function Column({
   title = '',
@@ -10,7 +18,7 @@ export default function Column({
   index,
   createCard,
   children,
-}) {
+}: ColumnProps) {
   const [text, setText] = useState('');
   const [shouldClearText, setShouldClearText] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -68,7 +76,7 @@ export default function Column({
               ${showForm ? '' : styles.hidden}`}>
             <div className={styles.TextareaWrapper}>
               <AutoResizableTextarea
-                shouldFocus={showForm.toString()}
+                shouldFocus={showForm}
                 textValue={text}
                 onChange={setText}
                 placeholder="Enter a title for this card..."

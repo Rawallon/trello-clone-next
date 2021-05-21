@@ -1,5 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
+interface AutoResizableInput {
+  textValue: string;
+  onChange?: (value: string) => void;
+  onBlur?: (value: SyntheticEvent) => void;
+  onKeyPress?: (value: SyntheticEvent) => void;
+  className: string;
+  shouldFocus: boolean;
+}
 export default function AutoResizableInput({
   textValue,
   onChange,
@@ -7,26 +14,25 @@ export default function AutoResizableInput({
   onKeyPress,
   className,
   shouldFocus,
-}) {
+}: AutoResizableInput) {
   const spanRef = useRef(null);
   const inputRef = useRef(null);
 
   const [width, setWidth] = useState(0);
-  function onChangeHandler(event) {
-    // TODO: maybe calculate this better
+  function onChangeHandler(event: SyntheticEvent) {
     setWidth(spanRef.current.offsetWidth + 18);
     if (onChange) {
-      onChange(event.target.value);
+      onChange((event.target as HTMLInputElement).value);
     }
   }
 
-  function onBlurHandler(event) {
+  function onBlurHandler(event: SyntheticEvent) {
     if (onBlur) {
       onBlur(event);
     }
   }
 
-  function onKeyPressHandler(event) {
+  function onKeyPressHandler(event: SyntheticEvent) {
     if (onKeyPress) {
       onKeyPress(event);
     }
@@ -42,7 +48,7 @@ export default function AutoResizableInput({
   return (
     <>
       <span
-        style={{ zIndex: '-10', position: 'absolute' }}
+        style={{ position: 'absolute' }}
         className={className}
         ref={spanRef}>
         {textValue}

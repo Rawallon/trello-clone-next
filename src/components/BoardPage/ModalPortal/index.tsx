@@ -6,8 +6,16 @@ import AutoResizableTextarea from '../AutoResizableTextarea';
 import { CloseIcon } from '../../Icons';
 import styles from './modalportal.module.css';
 import FormatingHelp from '../FormatingHelp';
+import { Card } from '../../../context/CardsContext';
+import { List } from '../../../context/ListsContext';
 
-function ModalPortal({ getCard, getList, updateCardData }) {
+interface ModalPortal {
+  getList: (value: string) => List;
+  getCard: (value: string) => Card;
+  updateCardData: (newData: Card) => void;
+}
+
+function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
   const ref = useRef();
   const { currentModal, hideModal } = useModal();
   const [mounted, setMounted] = useState(false);
@@ -72,6 +80,8 @@ function ModalPortal({ getCard, getList, updateCardData }) {
         <div>
           <AutoResizableTextarea
             textValue={cardData.name}
+            placeholder={cardData.name}
+            shouldFocus={false}
             onChange={(e) => changeCardDataHandler('name', e)}
           />
           <small>
@@ -93,6 +103,7 @@ function ModalPortal({ getCard, getList, updateCardData }) {
             <>
               <AutoResizableTextarea
                 className={styles.textarea}
+                placeholder=""
                 shouldFocus={editingDesc}
                 textValue={cardData.description}
                 onChange={(e) => changeCardDataHandler('description', e)}

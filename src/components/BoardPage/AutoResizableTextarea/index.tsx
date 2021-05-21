@@ -1,4 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, SyntheticEvent } from 'react';
+
+interface AutoResizableTextareaProps {
+  shouldFocus: boolean;
+  textValue: string;
+  placeholder: string;
+  className?: string;
+  onChange: (value: string) => void;
+  onBlur?: (value: SyntheticEvent) => void;
+  onKeyPress?: (value: SyntheticEvent) => void;
+  shouldClearText?: boolean;
+  setShouldClearText?: (value: boolean) => void;
+}
 
 export default function AutoResizableTextarea({
   shouldFocus,
@@ -8,9 +20,9 @@ export default function AutoResizableTextarea({
   className,
   onBlur,
   onKeyPress,
-  shouldClearText,
+  shouldClearText = false,
   setShouldClearText,
-}) {
+}: AutoResizableTextareaProps) {
   const textAreaRef = useRef(null);
   const [textAreaHeight, setTextAreaHeight] = useState('auto');
   const [parentHeight, setParentHeight] = useState('auto');

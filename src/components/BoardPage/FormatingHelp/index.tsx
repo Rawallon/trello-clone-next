@@ -1,6 +1,10 @@
 import { CloseIcon } from '../../Icons';
 import styles from './formatinghelp.module.css';
 
+interface FormatingHelp {
+  closeHelperHandler: () => void;
+}
+
 function FormatingHelp({ closeHelperHandler }) {
   return (
     <div className={styles.popOver}>

@@ -5,12 +5,19 @@ import styles from './columnheader.module.css';
 import AutoResizableInput from '../AutoResizableInput';
 import { CloseIcon, HomeIcon } from '../../Icons';
 
+interface ColumnHeaderProps {
+  title: string;
+  changeTitleHandler: (value: string) => void;
+  changeBgHandler: (value: string) => void;
+  bgOptions: string[];
+}
+
 function ColumnHeader({
   title,
   changeTitleHandler,
   changeBgHandler,
   bgOptions,
-}) {
+}: ColumnHeaderProps) {
   const [titleHolder, setTitleHolder] = useState(title);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -61,7 +68,7 @@ function ColumnHeader({
           </div>
         </Link>
       </div>
-      <div style={{ flexGrow: '1' }}>
+      <div className={styles.flexGrow}>
         {!isEditingTitle ? (
           <div
             className={styles.titleBtn}

@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import styles from './addlist.module.css';
 
-function AddList({ createList }) {
+interface AddListProps {
+  createList: (title: String) => void;
+}
+
+function AddList({ createList }: AddListProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [inputText, setInputText] = useState('');
 
