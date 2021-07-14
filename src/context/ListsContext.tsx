@@ -24,10 +24,14 @@ export function ListContextProvider({ children }) {
   }
 
   async function createList(boardId: string, title: string) {
-    const retApi = await ApiCall(`/board/${boardId}/list`, 'POST', {
-      title,
+    const id = Math.random().toString(10).substr(2, 9);
+    const retApi = await ApiCall(`/api/boards/${boardId}/lists`, 'POST', {
+      newList: { id: `${id}-card`, title },
+      boardId,
     });
-    setCurrentList(retApi);
+    if (retApi.success) {
+      setCurrentList((oldList) => [...oldList, { id: `${id}-card`, title }]);
+    }
   }
 
   async function moveList(
@@ -38,8 +42,13 @@ export function ListContextProvider({ children }) {
     const retApi = await ApiCall(`/board/${boardId}/list`, 'PATCH', {
       listId,
       insertIndex,
+      boardId,
     });
-    setCurrentList(retApi);
+
+    const cIndex = currentList.findIndex((c) => c.id === listId);
+    const newList = [...currentList];
+    newList.splice(insertIndex, 0, newList.splice(cIndex, 1)[0]);
+    setCurrentList(newList);
   }
 
   function getList(lID) {

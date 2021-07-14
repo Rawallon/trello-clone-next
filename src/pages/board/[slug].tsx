@@ -154,7 +154,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const { slug } = ctx.params;
-  const data: Board = await ApiCall(`http://localhost:3000/board/${slug}`);
+  const data: Board = await ApiCall(`http://localhost:3000/api/boards/${slug}`);
+
   return {
     props: {
       bId: data.id,

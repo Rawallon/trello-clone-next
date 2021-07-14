@@ -49,11 +49,13 @@ function BoardListing({ boards, username }) {
 export default BoardListing;
 
 export const getStaticProps = async (ctx) => {
-  const data: apiReturn = await ApiCall(`http://localhost:3000/user/1`);
+  const data: apiReturn = await ApiCall(
+    `http://localhost:3000/api/boards?userid=60ee30ef2607d5dc5ddc6c8c`,
+  );
   return {
     props: {
-      boards: data.boards,
-      username: data.username,
+      boards: data,
+      username: 'Rawallon',
     },
   };
 };
