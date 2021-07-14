@@ -1,49 +1,23 @@
 import { ObjectId } from 'mongodb';
-import { connect } from '../../../utils/database';
+import { find, removeById, updateById } from '../../../utils/database';
+
+const BOARDS_COLLECTION = 'boards';
 
 export default async function handler(req, res) {
-  const { db } = await connect();
   const requestType = req.method;
   switch (requestType) {
-    case 'POST': {
-      const { title, bgcolor, lists, cards, author, isPublic } = req.body;
-      if (!author) {
-        res.status(400).send('Missing author');
-        return;
-      }
-      if (!title) {
-        res.status(400).send('Missing title');
-        return;
-      }
-      const data = {
-        title,
-        bgcolor: bgcolor || '#FFFFFF',
-        permissionList: [],
-        lists: lists || [],
-        cards: cards || [],
-        author: author,
-        isPublic: isPublic || false,
-      };
-      const board = await db.collection('boards').insertOne(data);
-      res.send(board);
-      return;
-    }
-
     case 'GET': {
       const { slug } = req.query;
       if (!slug) {
-        res.status(400).send('Missing boardId');
+        res.status(400).send({ error: 'Missing boardId' });
         return;
       }
-      const boards = await db
-        .collection('boards')
-        .find({ _id: ObjectId(slug) })
-        .toArray();
-      if (boards.length === 0) {
-        res.status(404).send('Board not found');
+      const board = await find(BOARDS_COLLECTION, ObjectId(slug));
+      if (board.length === 0) {
+        res.status(404).send({ error: 'Board not found' });
         return;
       }
-      res.send(boards);
+      res.send(board[0]);
       return;
     }
 
@@ -58,28 +32,33 @@ export default async function handler(req, res) {
         cards: cards || [],
         isPublic: isPublic || false,
       };
-      const update = {
-        $set: data,
-      };
-      const board = await db
-        .collection('boards')
-        .updateOne({ _id: ObjectId(slug) }, update);
-      res.send(board);
+      const isBoardUpdated = await updateById(
+        BOARDS_COLLECTION,
+        ObjectId(slug),
+        data,
+      );
+      if (isBoardUpdated) {
+        res.status(200).send({ success: true });
+      } else {
+        res.status(404).send({ success: false });
+      }
       return;
     }
 
     case 'DELETE': {
       const { slug } = req.query;
 
-      const deleteBoard = await db
-        .collection('boards')
-        .deleteOne({ _id: ObjectId(slug) });
-      res.send(deleteBoard);
+      const deleteBoard = await removeById(BOARDS_COLLECTION, ObjectId(slug));
+      if (deleteBoard) {
+        res.status(200).send({ success: true });
+      } else {
+        res.status(404).send({ success: false });
+      }
       return;
     }
 
     default:
-      res.status(400).send('Bad request');
+      res.status(400).send({ error: 'Bad request' });
       return;
   }
 }

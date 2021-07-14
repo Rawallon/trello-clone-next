@@ -1,17 +1,18 @@
 import { ObjectId } from 'mongodb';
-import { connect } from '../../../utils/database';
+import { find, insert } from '../../../utils/database';
+
+const BOARDS_COLLECTION = 'boards';
 
 export default async function handler(req, res) {
-  const { db } = await connect();
   const requestType = req.method;
   switch (requestType) {
     case 'POST': {
       const { title, bgcolor, lists, cards, author, isPublic } = req.body;
       if (!author) {
-        res.status(400).send('Missing author');
+        res.status(400).send({ error: 'Missing author' });
       }
       if (!title) {
-        res.status(400).send('Missing title');
+        res.status(400).send({ error: 'Missing title' });
       }
       const data = {
         title,
@@ -22,7 +23,7 @@ export default async function handler(req, res) {
         author: ObjectId(author),
         isPublic: isPublic || false,
       };
-      const board = await db.collection('boards').insertOne(data);
+      const board = await insert(BOARDS_COLLECTION, data);
       res.send(board);
       return;
     }
@@ -30,35 +31,20 @@ export default async function handler(req, res) {
     case 'GET': {
       const { userid } = req.query;
       if (!userid) {
-        res.status(400).send('Missing userid');
+        res.status(400).send({ error: 'Missing user id' });
         return;
       }
-      const boards = await db
-        .collection('boards')
-        .find({ author: ObjectId(userid) })
-        .project({ title: 1, isPublic: 1 })
-        .toArray();
+      const boards = await find(
+        BOARDS_COLLECTION,
+        { author: ObjectId(userid) },
+        ['title', 'isPublic'],
+      );
       res.send(boards);
       return;
     }
 
-    case 'PUT': {
-      const { title, isPublic } = req.body;
-      const { _id } = req.params;
-      const data = {
-        title,
-        isPublic: isPublic || false,
-      };
-      const update = {
-        $set: data,
-      };
-      const board = await db.collection('boards').updateOne({ _id }, update);
-      res.send(board);
-      return;
-    }
-
     default:
-      res.status(400).send('Bad request');
+      res.status(400).send({ error: 'Bad request' });
       return;
   }
 }
