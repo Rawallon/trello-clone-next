@@ -51,13 +51,25 @@ export function BoardContextProvider({ children }) {
   function putMyBoards(boards: any[]) {
     setMyBoards(boards);
   }
-  async function createNewBoard(title: string, bgColor: string) {
-    const userId = 1;
-    const retApi = await ApiCall(`/user/${userId}/board`, 'POST', {
+  async function createNewBoard(
+    title: string,
+    bgColor: string,
+    userId: string,
+  ) {
+    const retApi = await ApiCall(`/api/boards`, 'POST', {
       title,
       bgColor,
+      author: userId,
     });
-    setMyBoards(retApi);
+    if (retApi) {
+      const newBoard = {
+        id: retApi.success,
+        title,
+        bgcolor: bgColor,
+        author: userId,
+      };
+      setMyBoards((oldBoards) => [...oldBoards, newBoard]);
+    }
   }
 
   async function changeBoard(boardId: string, field: string, value: string) {
