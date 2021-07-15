@@ -12,6 +12,7 @@ export interface Board {
   cards: Card;
   author: ObjectId;
   isPublic: boolean;
+  permissionList: ObjectId[];
 }
 
 interface BoardContextData {
@@ -20,7 +21,7 @@ interface BoardContextData {
   title: string;
   bgColor: string;
   putMyBoards: (boards: Board[]) => void;
-  createNewBoard: (title: string, bgcolor: string) => void;
+  createNewBoard: (title: string, bgcolor: string, userId: string) => void;
   putBoardData: (title: string, bgcolor: string) => void;
   changeBoard: (boardId: string, field: string, value: string) => void;
 }
