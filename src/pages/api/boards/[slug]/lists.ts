@@ -8,14 +8,25 @@ import {
 
 const BOARDS_COLLECTION = 'boards';
 
+interface postBody {
+  newList: string;
+  boardId: string;
+}
+
+interface patchBody {
+  listId: string;
+  insertIndex: number;
+  boardId: string;
+}
+
 export default async function handler(req, res) {
   const requestType = req.method;
   switch (requestType) {
     case 'POST': {
-      const { newList, boardId } = req.body;
+      const { newList, boardId } = req.body as postBody;
       const updateReturn = updatePushById(
         BOARDS_COLLECTION,
-        ObjectId(boardId),
+        new ObjectId(boardId),
         {
           lists: newList,
         },
@@ -28,10 +39,10 @@ export default async function handler(req, res) {
       }
     }
     case 'PATCH': {
-      const { listId, insertIndex, boardId } = req.body;
+      const { listId, insertIndex, boardId } = req.body as patchBody;
 
       const oldBoard = await find(BOARDS_COLLECTION, {
-        _id: ObjectId(boardId),
+        _id: new ObjectId(boardId),
       });
 
       const cIndex = oldBoard[0].lists.findIndex((c) => c.id === listId);
@@ -40,7 +51,7 @@ export default async function handler(req, res) {
 
       const updateReturn = updateById(
         BOARDS_COLLECTION,
-        { _id: ObjectId(boardId) },
+        { _id: new ObjectId(boardId) },
         { lists: newList },
       );
 

@@ -1,9 +1,16 @@
 import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Board } from '../../../context/BoardContext';
+import { BOARDS_COLLECTION } from '../../../utils/constants';
 import { find, removeById, updateById } from '../../../utils/database';
-
-const BOARDS_COLLECTION = 'boards';
-
-export default async function handler(req, res) {
+interface patchBody {
+  field: string;
+  value: string;
+}
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const requestType = req.method;
   switch (requestType) {
     case 'GET': {
@@ -12,7 +19,10 @@ export default async function handler(req, res) {
         res.status(400).send({ error: 'Missing boardId' });
         return;
       }
-      const board = await find(BOARDS_COLLECTION, ObjectId(slug));
+      const board: Board[] = await find(
+        BOARDS_COLLECTION,
+        new ObjectId(String(slug)),
+      );
       if (board.length === 0) {
         res.status(404).send({ error: 'Board not found' });
         return;
@@ -22,7 +32,7 @@ export default async function handler(req, res) {
     }
 
     case 'PATCH': {
-      const { field, value } = req.body;
+      const { field, value } = req.body as patchBody;
       const { slug } = req.query;
       if (!field || !value || !slug) {
         res.status(400).send({ error: 'Bad request' });
@@ -31,7 +41,7 @@ export default async function handler(req, res) {
       let data;
       if (field === 'background') {
         data = {
-          bgcolor: value ?? '#FFFFFF',
+          bgcolor: value ?? 'rgb(210, 144, 52)',
         };
       } else if (field === 'title') {
         data = {
@@ -41,7 +51,7 @@ export default async function handler(req, res) {
 
       const isBoardUpdated = await updateById(
         BOARDS_COLLECTION,
-        ObjectId(slug),
+        new ObjectId(String(slug)),
         data,
       );
       if (isBoardUpdated) {
@@ -55,7 +65,10 @@ export default async function handler(req, res) {
     case 'DELETE': {
       const { slug } = req.query;
 
-      const deleteBoard = await removeById(BOARDS_COLLECTION, ObjectId(slug));
+      const deleteBoard = await removeById(
+        BOARDS_COLLECTION,
+        new ObjectId(String(slug)),
+      );
       if (deleteBoard) {
         res.status(200).send({ success: true });
       } else {

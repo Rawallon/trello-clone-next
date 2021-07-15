@@ -14,10 +14,10 @@ if (!MONGODB_DB) {
   );
 }
 
-let cached = global.mongo;
+let cached;
 
 if (!cached) {
-  cached = global.mongo = { conn: null, promise: null };
+  cached = { conn: null, promise: null };
 }
 
 async function connectToDB() {
@@ -43,18 +43,20 @@ async function connectToDB() {
   return cached.conn;
 }
 
-export async function insert(collection, data) {
-  if (!cached.conn?.client) {
+export async function insert(collection, data): Promise<string> {
+  if (!cached.conn) {
     await connectToDB();
   }
   const insertReturn = await cached.conn.db
     .collection(collection)
     .insertOne(data);
-  return insertReturn;
+  console.log(insertReturn);
+
+  return insertReturn.insertedId;
 }
 
-export async function removeById(collection, id) {
-  if (!cached.conn?.client) {
+export async function removeById(collection, id): Promise<boolean> {
+  if (!cached.conn) {
     await connectToDB();
   }
   const insertReturn = await cached.conn.db
@@ -67,8 +69,8 @@ export async function removeById(collection, id) {
   }
 }
 
-export async function updateById(collection, id, newData) {
-  if (!cached.conn?.client) {
+export async function updateById(collection, id, newData): Promise<boolean> {
+  if (!cached.conn) {
     await connectToDB();
   }
   const updateReturn = await cached.conn.db.collection(collection).updateOne(
@@ -84,8 +86,12 @@ export async function updateById(collection, id, newData) {
   }
 }
 
-export async function updatePushById(collection, id, newData) {
-  if (!cached.conn?.client) {
+export async function updatePushById(
+  collection,
+  id,
+  newData,
+): Promise<boolean> {
+  if (!cached.conn) {
     await connectToDB();
   }
   const updateReturn = await cached.conn.db.collection(collection).updateOne(
@@ -101,8 +107,12 @@ export async function updatePushById(collection, id, newData) {
   }
 }
 
-export async function find(collection, filter = {}, projection = []) {
-  if (!cached.conn?.client) {
+export async function find(
+  collection,
+  filter = {},
+  projection = [],
+): Promise<any[]> {
+  if (!cached.conn) {
     await connectToDB();
   }
   const projectionObj = {};

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { createContext, useContext, useState } from 'react';
 import ApiCall from '../utils/API';
 import { Card } from './CardsContext';
@@ -9,6 +10,8 @@ export interface Board {
   bgcolor: string;
   lists: List;
   cards: Card;
+  author: ObjectId;
+  isPublic: boolean;
 }
 
 interface BoardContextData {

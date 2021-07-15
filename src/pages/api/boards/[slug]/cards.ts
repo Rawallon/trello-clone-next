@@ -1,17 +1,34 @@
 import { ObjectId } from 'mongodb';
+import { Card } from '../../../../context/CardsContext';
 import { find, updateById, updatePushById } from '../../../../utils/database';
 
 const BOARDS_COLLECTION = 'boards';
+
+interface postBody {
+  boardId: string;
+  newCard: Card;
+}
+interface putBody {
+  boardId: string;
+  newData: Card;
+}
+
+interface patchBody {
+  cardId: string;
+  toId: string;
+  insertIndex: number;
+  boardId: string;
+}
 
 export default async function handler(req, res) {
   const requestType = req.method;
   switch (requestType) {
     case 'POST': {
-      const { newCard, boardId } = req.body;
+      const { newCard, boardId } = req.body as postBody;
 
       const addedCard = await updatePushById(
         BOARDS_COLLECTION,
-        ObjectId(boardId),
+        new ObjectId(boardId),
         {
           cards: newCard,
         },
@@ -26,8 +43,8 @@ export default async function handler(req, res) {
     }
 
     case 'PATCH': {
-      const { cardId, toId, insertIndex, boardId } = req.body;
-      const oldBoard = await find(BOARDS_COLLECTION, ObjectId(boardId));
+      const { cardId, toId, insertIndex, boardId } = req.body as patchBody;
+      const oldBoard = await find(BOARDS_COLLECTION, new ObjectId(boardId));
 
       const cIndex = oldBoard[0].cards.findIndex((c) => c.id === cardId);
       const newCards = [...oldBoard[0].cards];
@@ -37,7 +54,7 @@ export default async function handler(req, res) {
 
       const updateReturn = await updateById(
         BOARDS_COLLECTION,
-        ObjectId(boardId),
+        new ObjectId(boardId),
         {
           cards: newCards,
         },
@@ -52,9 +69,9 @@ export default async function handler(req, res) {
     }
 
     case 'PUT': {
-      const { newData, boardId } = req.body;
+      const { newData, boardId } = req.body as putBody;
       const oldBoard = await find(BOARDS_COLLECTION, {
-        _id: ObjectId(boardId),
+        _id: new ObjectId(boardId),
         'cards.id': newData.id,
       });
 
@@ -64,7 +81,7 @@ export default async function handler(req, res) {
       const cCard = newData;
       newCards.splice(cIndex, 0, cCard);
 
-      const editedCard = updateById(BOARDS_COLLECTION, ObjectId(boardId), {
+      const editedCard = updateById(BOARDS_COLLECTION, new ObjectId(boardId), {
         cards: newCards,
       });
 

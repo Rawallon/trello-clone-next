@@ -1,13 +1,18 @@
 import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Board } from '../../../context/BoardContext';
+import { BOARDS_COLLECTION } from '../../../utils/constants';
 import { find, insert } from '../../../utils/database';
 
-const BOARDS_COLLECTION = 'boards';
-
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const requestType = req.method;
   switch (requestType) {
     case 'POST': {
-      const { title, bgcolor, lists, cards, author, isPublic } = req.body;
+      const { title, bgcolor, lists, cards, author, isPublic } =
+        req.body as Board;
       if (!author) {
         res.status(400).send({ error: 'Missing author' });
       }
@@ -15,16 +20,20 @@ export default async function handler(req, res) {
         res.status(400).send({ error: 'Missing title' });
       }
       const data = {
-        title,
-        bgcolor: bgcolor || '#FFFFFF',
+        title: title ?? 'My board',
+        bgcolor: bgcolor ?? 'rgb(210, 144, 52)',
         permissionList: [],
-        lists: lists || [],
-        cards: cards || [],
-        author: ObjectId(author),
+        lists: lists ?? [],
+        cards: cards ?? [],
+        author: new ObjectId(author),
         isPublic: isPublic || false,
       };
       const board = await insert(BOARDS_COLLECTION, data);
-      res.send(board);
+      if (board) {
+        res.status(200).send({ success: board });
+      } else {
+        res.status(404).send({ success: false });
+      }
       return;
     }
 
@@ -36,7 +45,7 @@ export default async function handler(req, res) {
       }
       const boards = await find(
         BOARDS_COLLECTION,
-        { author: ObjectId(userid) },
+        { author: new ObjectId(String(userid)) },
         ['title', 'isPublic'],
       );
       res.send(boards);
