@@ -39,7 +39,7 @@ export function ListContextProvider({ children }) {
     listId: string,
     insertIndex: number,
   ) {
-    const retApi = await ApiCall(`/board/${boardId}/list`, 'PATCH', {
+    const retApi = await ApiCall(`/api/boards/${boardId}/lists`, 'PATCH', {
       listId,
       insertIndex,
       boardId,

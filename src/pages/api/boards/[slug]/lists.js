@@ -38,7 +38,7 @@ export default async function handler(req, res) {
       const newList = [...oldBoard[0].lists];
       newList.splice(insertIndex, 0, newList.splice(cIndex, 1)[0]);
 
-      const updateReturn = update(
+      const updateReturn = updateById(
         BOARDS_COLLECTION,
         { _id: ObjectId(boardId) },
         { lists: newList },
