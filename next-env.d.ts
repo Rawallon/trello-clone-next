@@ -1,3 +1,3 @@
 /// <reference types="next" />
 /// <reference types="next/types/global" />
-declare module '*.css';
+/// <reference types="next/image-types/global" />
