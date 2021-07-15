@@ -1,3 +1,4 @@
+import { getSession, useSession } from 'next-auth/client';
 import { useEffect, useState } from 'react';
 import AddBoardModal from '../components/BoardListing/AddBoardModal';
 import BoardsList from '../components/BoardListing/BoardsList';
@@ -11,13 +12,22 @@ interface apiReturn {
   boards: Board[];
 }
 
-function BoardListing({ boards, username }) {
+interface sessionReturn {
+  user: {
+    userId: string;
+    image: string;
+    name: string;
+  };
+}
+
+export default function BoardListing({ boards }) {
+  const [session, loading] = useSession();
+
   const { bgOptions, myBoards, putMyBoards, createNewBoard } = useBoard();
   const [isCreateModal, setIsCreateModal] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      console.log(boards);
       putMyBoards(boards);
     }
   }, [boards]);
@@ -27,35 +37,38 @@ function BoardListing({ boards, username }) {
   }
 
   function createBoardHandle(title, color) {
-    createNewBoard(title, color);
+    createNewBoard(title, color, session.user.userId);
   }
 
-  return (
-    <div className={styles.wrapper}>
-      {isCreateModal ? (
-        <AddBoardModal
-          bgOptions={bgOptions}
-          toggleModal={toggleModal}
-          createBoard={createBoardHandle}
+  if (typeof window !== 'undefined' && loading) return null;
+  if (session) {
+    return (
+      <div className={styles.wrapper}>
+        {isCreateModal ? (
+          <AddBoardModal
+            bgOptions={bgOptions}
+            toggleModal={toggleModal}
+            createBoard={createBoardHandle}
+          />
+        ) : (
+          ''
+        )}
+        <ProfileSideBar
+          username={session.user.name}
+          picture={session.user.image}
         />
-      ) : (
-        ''
-      )}
-      <ProfileSideBar username={'Rawallon Cardoso'} />
-      <BoardsList boards={myBoards} showModal={toggleModal} />
-    </div>
-  );
+        <BoardsList boards={myBoards} showModal={toggleModal} />
+      </div>
+    );
+  }
 }
-export default BoardListing;
 
-export const getStaticProps = async (ctx) => {
+export async function getServerSideProps(context) {
+  const session = (await getSession(context)) as unknown as sessionReturn;
   const data: apiReturn = await ApiCall(
-    `http://localhost:3000/api/boards?userid=60ee30ef2607d5dc5ddc6c8c`,
+    `http://localhost:3000/api/boards?userid=${session.user.userId}`,
   );
   return {
-    props: {
-      boards: data,
-      username: 'Rawallon',
-    },
+    props: { boards: data, session },
   };
-};
+}
