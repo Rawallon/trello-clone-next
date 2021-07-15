@@ -1,5 +1,4 @@
 import { MongoClient } from 'mongodb';
-import { send } from 'process';
 
 const { DATABASE_URL, MONGODB_DB } = process.env;
 
@@ -21,7 +20,7 @@ if (!cached) {
   cached = global.mongo = { conn: null, promise: null };
 }
 
-export async function connect() {
+async function connectToDB() {
   if (cached.conn) {
     return cached.conn;
   }
@@ -45,6 +44,9 @@ export async function connect() {
 }
 
 export async function insert(collection, data) {
+  if (!cached.conn?.client) {
+    await connectToDB();
+  }
   const insertReturn = await cached.conn.db
     .collection(collection)
     .insertOne(data);
@@ -52,64 +54,63 @@ export async function insert(collection, data) {
 }
 
 export async function removeById(collection, id) {
-  if (cached.conn?.client) {
-    const insertReturn = await cached.conn.db
-      .collection(collection)
-      .deleteOne({ _id: id });
-    if (insertReturn.deletedCount > 0) {
-      return true;
-    } else {
-      return false;
-    }
+  if (!cached.conn?.client) {
+    await connectToDB();
   }
-  return false;
+  const insertReturn = await cached.conn.db
+    .collection(collection)
+    .deleteOne({ _id: id });
+  if (insertReturn.deletedCount > 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export async function updateById(collection, id, newData) {
-  if (cached.conn?.client) {
-    const updateReturn = await cached.conn.db.collection(collection).updateOne(
-      { _id: id },
-      {
-        $set: newData,
-      },
-    );
-    if (updateReturn.modifiedCount > 0) {
-      return true;
-    } else {
-      return false;
-    }
+  if (!cached.conn?.client) {
+    await connectToDB();
   }
-  return false;
+  const updateReturn = await cached.conn.db.collection(collection).updateOne(
+    { _id: id },
+    {
+      $set: newData,
+    },
+  );
+  if (updateReturn.modifiedCount > 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export async function updatePushById(collection, id, newData) {
-  if (cached.conn?.client) {
-    const updateReturn = await cached.conn.db.collection(collection).updateOne(
-      { _id: id },
-      {
-        $push: newData,
-      },
-    );
-    if (updateReturn.modifiedCount > 0) {
-      return true;
-    } else {
-      return false;
-    }
+  if (!cached.conn?.client) {
+    await connectToDB();
   }
-  return false;
+  const updateReturn = await cached.conn.db.collection(collection).updateOne(
+    { _id: id },
+    {
+      $push: newData,
+    },
+  );
+  if (updateReturn.modifiedCount > 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export async function find(collection, filter = {}, projection = []) {
+  if (!cached.conn?.client) {
+    await connectToDB();
+  }
   const projectionObj = {};
   projection.map((el) => (projectionObj[el] = 1));
-  if (cached.conn?.client) {
-    const findReturn = await cached.conn.db
-      .collection(collection)
-      .find(filter)
-      .project(projectionObj)
-      .toArray();
-    return findReturn.map(({ _id, ...item }) => ({ id: _id, ...item }));
-  } else {
-    return [];
-  }
+  const findReturn = await cached.conn.db
+    .collection(collection)
+    .find(filter)
+    .project(projectionObj)
+    .toArray();
+  return findReturn.map(({ _id, ...item }) => ({ id: _id, ...item }));
 }
