@@ -46,7 +46,7 @@ export default async function handler(
       const boards = await find(
         BOARDS_COLLECTION,
         { author: new ObjectId(String(userid)) },
-        ['title', 'isPublic'],
+        ['title', 'isPublic', 'bgcolor'],
       );
       res.send(boards);
       return;
