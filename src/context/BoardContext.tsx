@@ -58,12 +58,14 @@ export function BoardContextProvider({ children }) {
   }
 
   async function changeBoard(boardId: string, field: string, value: string) {
-    const retApi = await ApiCall('/board/' + boardId, 'PATCH', {
+    const retApi = await ApiCall(`/api/boards/${boardId}`, 'PATCH', {
       field: field,
       value: value,
     });
-    if (field === 'title') setTitle(retApi.title);
-    if (field === 'background') setBgColor(retApi.bgcolor);
+    if (retApi.success) {
+      if (field === 'title') setTitle(value);
+      if (field === 'background') setBgColor(value);
+    }
   }
 
   return (
