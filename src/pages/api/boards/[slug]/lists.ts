@@ -1,10 +1,5 @@
 import { ObjectId } from 'mongodb';
-import {
-  find,
-  insert,
-  updateById,
-  updatePushById,
-} from '../../../../utils/database';
+import { find, updateById, updatePushById } from '../../../../utils/database';
 
 const BOARDS_COLLECTION = 'boards';
 
@@ -37,6 +32,7 @@ export default async function handler(req, res) {
       } else {
         res.status(404).send({ success: false });
       }
+      return;
     }
     case 'PATCH': {
       const { listId, insertIndex, boardId } = req.body as patchBody;
@@ -60,6 +56,7 @@ export default async function handler(req, res) {
       } else {
         res.status(404).send({ success: false });
       }
+      return;
     }
   }
 }

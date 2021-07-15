@@ -15,9 +15,11 @@ export default async function handler(
         req.body as Board;
       if (!author) {
         res.status(400).send({ error: 'Missing author' });
+        return;
       }
       if (!title) {
         res.status(400).send({ error: 'Missing title' });
+        return;
       }
       const data = {
         title: title ?? 'My board',
