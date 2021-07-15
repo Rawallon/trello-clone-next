@@ -3,16 +3,22 @@ import styles from './ProfileSideBar.module.css';
 
 interface ProfileSideBar {
   username: string;
+  picture: string;
 }
 
-function ProfileSideBar({ username }: ProfileSideBar) {
+function ProfileSideBar({ username, picture }: ProfileSideBar) {
+  if (!username) return null;
   return (
     <div className={styles.profileHolder}>
       <div>
-        <div className={styles.profPicture}>{username.split('')[0]}</div>
-        <p>
+        {picture ? (
+          <img className={styles.profPicture} src={picture} />
+        ) : (
+          <div className={styles.profPicture}>{username.split('')[0]}</div>
+        )}
+        <div className={styles.profName}>
           <b>{username}</b>
-        </p>
+        </div>
       </div>
       <div className={styles.menuItems}>
         <ul>

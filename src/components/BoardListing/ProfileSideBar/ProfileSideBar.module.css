@@ -9,7 +9,10 @@
   align-items: center;
   justify-content: flex-start;
 }
-
+.profName {
+  margin-top: 1rem;
+  text-align: center;
+}
 .profPicture {
   margin-top: 40px;
   border-radius: 50%;
