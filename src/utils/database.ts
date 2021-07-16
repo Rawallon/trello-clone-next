@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const { DATABASE_URL, MONGODB_DB } = process.env;
 
@@ -43,25 +43,27 @@ async function connectToDB() {
   return cached.conn;
 }
 
-export async function insert(collection, data): Promise<string> {
+export async function insert(collection: string, data: any): Promise<string> {
   if (!cached.conn) {
     await connectToDB();
   }
   const insertReturn = await cached.conn.db
     .collection(collection)
     .insertOne(data);
-  console.log(insertReturn);
-
   return insertReturn.insertedId;
 }
 
-export async function removeById(collection, id): Promise<boolean> {
+export async function removeById(
+  collection: string,
+  id: ObjectId,
+  authorId: ObjectId,
+): Promise<boolean> {
   if (!cached.conn) {
     await connectToDB();
   }
   const insertReturn = await cached.conn.db
     .collection(collection)
-    .deleteOne({ _id: id });
+    .deleteOne({ _id: id, author: authorId });
   if (insertReturn.deletedCount > 0) {
     return true;
   } else {
@@ -69,12 +71,17 @@ export async function removeById(collection, id): Promise<boolean> {
   }
 }
 
-export async function updateById(collection, id, newData): Promise<boolean> {
+export async function updateById(
+  collection: string,
+  id: ObjectId,
+  authorId: ObjectId,
+  newData: any,
+): Promise<boolean> {
   if (!cached.conn) {
     await connectToDB();
   }
   const updateReturn = await cached.conn.db.collection(collection).updateOne(
-    { _id: id },
+    { _id: id, author: authorId },
     {
       $set: newData,
     },
@@ -87,15 +94,16 @@ export async function updateById(collection, id, newData): Promise<boolean> {
 }
 
 export async function updatePushById(
-  collection,
-  id,
-  newData,
+  collection: string,
+  id: ObjectId,
+  authorId: ObjectId,
+  newData: any,
 ): Promise<boolean> {
   if (!cached.conn) {
     await connectToDB();
   }
   const updateReturn = await cached.conn.db.collection(collection).updateOne(
-    { _id: id },
+    { _id: id, author: authorId },
     {
       $push: newData,
     },
@@ -108,9 +116,9 @@ export async function updatePushById(
 }
 
 export async function find(
-  collection,
-  filter = {},
-  projection = [],
+  collection: string,
+  filter = {} as any,
+  projection = [] as any,
 ): Promise<any[]> {
   if (!cached.conn) {
     await connectToDB();
