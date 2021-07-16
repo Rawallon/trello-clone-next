@@ -4,9 +4,10 @@ import styles from './ProfileSideBar.module.css';
 interface ProfileSideBar {
   username: string;
   picture: string;
+  signOut: () => void;
 }
 
-function ProfileSideBar({ username, picture }: ProfileSideBar) {
+function ProfileSideBar({ username, picture, signOut }: ProfileSideBar) {
   if (!username) return null;
   return (
     <div className={styles.profileHolder}>
@@ -37,7 +38,7 @@ function ProfileSideBar({ username, picture }: ProfileSideBar) {
           <li>
             <span>Settings</span>
           </li>
-          <li>
+          <li onClick={signOut}>
             <span>Log out</span>
           </li>
         </ul>
