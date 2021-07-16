@@ -29,6 +29,7 @@ interface BoardContextData {
     field: string,
     value: string | boolean | string[],
   ) => void;
+  deleteBoard: (boardId: string) => void;
 }
 export const BoardContext = createContext({} as BoardContextData);
 
@@ -95,7 +96,13 @@ export function BoardContextProvider({ children }) {
       if (field === 'isPublic') setIsPublic(Boolean(value));
     }
   }
+
+  async function deleteBoard(boardId: string) {
+    const retApi = await ApiCall(`/api/boards/${boardId}`, 'DELETE');
+    if (retApi.success) {
+      return true;
     }
+    return false;
   }
 
   return (
@@ -110,6 +117,7 @@ export function BoardContextProvider({ children }) {
         createNewBoard,
         putBoardData,
         changeBoard,
+        deleteBoard,
       }}>
       {children}
     </BoardContext.Provider>
