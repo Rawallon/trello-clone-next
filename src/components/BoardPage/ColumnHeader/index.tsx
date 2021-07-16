@@ -57,7 +57,7 @@ function ColumnHeader({
   return (
     <div className={styles.wrapper}>
       <div>
-        <Link href="/">
+        <Link href="./">
           <div
             className={styles.titleBtn}
             style={{
