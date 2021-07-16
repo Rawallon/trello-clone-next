@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Board } from '../../../context/BoardContext';
 import { BOARDS_COLLECTION } from '../../../utils/constants';
 import { find, removeById, updateById } from '../../../utils/database';
+import { sessionReturn } from '../../../utils/interfaces';
 interface patchBody {
   field: string;
   value: string;

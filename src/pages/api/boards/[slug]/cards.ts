@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Card } from '../../../../context/CardsContext';
 import { find, updateById, updatePushById } from '../../../../utils/database';
+import { sessionReturn } from './../../../../utils/interfaces';
 
 const BOARDS_COLLECTION = 'boards';
 

@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Board } from '../../../context/BoardContext';
 import { BOARDS_COLLECTION } from '../../../utils/constants';
 import { find, insert } from '../../../utils/database';
+import { sessionReturn } from './../../../utils/interfaces';
 
 export default async function handler(
   req: NextApiRequest,

@@ -21,14 +21,7 @@ import { useList } from '../../context/ListsContext';
 import { useModal } from '../../context/ModalContext';
 import styles from '../../styles/Board.module.css';
 import ApiCall from '../../utils/API';
-
-interface sessionReturn {
-  user: {
-    userId: string;
-    image: string;
-    name: string;
-  };
-}
+import { sessionReturn } from '../../utils/interfaces';
 
 export default function BoardSlug({
   bId,

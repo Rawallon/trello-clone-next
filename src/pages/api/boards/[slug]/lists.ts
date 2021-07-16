@@ -1,7 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { find, updateById, updatePushById } from '../../../../utils/database';
-
-const BOARDS_COLLECTION = 'boards';
+import { sessionReturn } from '../../../../utils/interfaces';
 
 interface postBody {
   newList: string;

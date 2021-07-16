@@ -6,18 +6,11 @@ import ProfileSideBar from '../../components/BoardListing/ProfileSideBar';
 import { Board, useBoard } from '../../context/BoardContext';
 import styles from '../../styles/BoardListing.module.css';
 import ApiCall from '../../utils/API';
+import { sessionReturn } from '../../utils/interfaces';
 
 interface apiReturn {
   username: any;
   boards: Board[];
-}
-
-interface sessionReturn {
-  user: {
-    userId: string;
-    image: string;
-    name: string;
-  };
 }
 
 export default function BoardListing({ boards }) {
