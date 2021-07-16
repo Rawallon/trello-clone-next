@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/client';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Board } from '../../../context/BoardContext';
@@ -12,9 +13,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  const session = (await getSession({ req })) as unknown as sessionReturn;
+
   const requestType = req.method;
   switch (requestType) {
     case 'GET': {
+      console.log(session);
+
       const { slug } = req.query;
       if (!slug) {
         res.status(400).send({ error: 'Missing boardId' });
@@ -33,6 +38,11 @@ export default async function handler(
     }
 
     case 'PATCH': {
+      if (!session?.user?.userId) {
+        res.status(403).send({ error: 'Bad author id' });
+        return;
+      }
+
       const { field, value } = req.body as patchBody;
       const { slug } = req.query;
       if (!field || !value || !slug) {
@@ -53,6 +63,7 @@ export default async function handler(
       const isBoardUpdated = await updateById(
         BOARDS_COLLECTION,
         new ObjectId(String(slug)),
+        new ObjectId(String(session.user.userId)),
         data,
       );
       if (isBoardUpdated) {
@@ -64,11 +75,16 @@ export default async function handler(
     }
 
     case 'DELETE': {
+      if (!session?.user?.userId) {
+        res.status(403).send({ error: 'Bad author id' });
+        return;
+      }
       const { slug } = req.query;
 
       const deleteBoard = await removeById(
         BOARDS_COLLECTION,
         new ObjectId(String(slug)),
+        new ObjectId(String(session.user.userId)),
       );
       if (deleteBoard) {
         res.status(200).send({ success: true });

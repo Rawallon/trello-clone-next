@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/client';
 import { ObjectId } from 'mongodb';
 import { Card } from '../../../../context/CardsContext';
 import { find, updateById, updatePushById } from '../../../../utils/database';
@@ -22,14 +23,22 @@ interface patchBody {
 }
 
 export default async function handler(req, res) {
+  const session = (await getSession({ req })) as unknown as sessionReturn;
+
   const requestType = req.method;
   switch (requestType) {
     case 'POST': {
+      if (!session?.user?.userId) {
+        res.status(403).send({ error: 'Bad author id' });
+        return;
+      }
+
       const { newCard, boardId } = req.body as postBody;
 
       const addedCard = await updatePushById(
         BOARDS_COLLECTION,
         new ObjectId(boardId),
+        new ObjectId(String(session.user.userId)),
         {
           cards: newCard,
         },
@@ -44,6 +53,11 @@ export default async function handler(req, res) {
     }
 
     case 'PATCH': {
+      if (!session?.user?.userId) {
+        res.status(403).send({ error: 'Bad author id' });
+        return;
+      }
+
       const { cardId, toId, insertIndex, boardId } = req.body as patchBody;
       const oldBoard = await find(BOARDS_COLLECTION, new ObjectId(boardId));
 
@@ -56,6 +70,7 @@ export default async function handler(req, res) {
       const updateReturn = await updateById(
         BOARDS_COLLECTION,
         new ObjectId(boardId),
+        new ObjectId(String(session.user.userId)),
         {
           cards: newCards,
         },
@@ -70,6 +85,11 @@ export default async function handler(req, res) {
     }
 
     case 'PUT': {
+      if (!session?.user?.userId) {
+        res.status(403).send({ error: 'Bad author id' });
+        return;
+      }
+
       const { newData, boardId } = req.body as putBody;
       const oldBoard = await find(BOARDS_COLLECTION, {
         _id: new ObjectId(boardId),
@@ -82,9 +102,14 @@ export default async function handler(req, res) {
       const cCard = newData;
       newCards.splice(cIndex, 0, cCard);
 
-      const editedCard = updateById(BOARDS_COLLECTION, new ObjectId(boardId), {
-        cards: newCards,
-      });
+      const editedCard = updateById(
+        BOARDS_COLLECTION,
+        new ObjectId(boardId),
+        new ObjectId(String(session.user.userId)),
+        {
+          cards: newCards,
+        },
+      );
 
       if (editedCard) {
         res.status(200).send({ success: true });
