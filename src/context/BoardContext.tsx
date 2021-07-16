@@ -20,10 +20,15 @@ interface BoardContextData {
   bgOptions: string[];
   title: string;
   bgColor: string;
+  isPublic: boolean;
   putMyBoards: (boards: Board[]) => void;
   createNewBoard: (title: string, bgcolor: string, userId: string) => void;
-  putBoardData: (title: string, bgcolor: string) => void;
-  changeBoard: (boardId: string, field: string, value: string) => void;
+  putBoardData: (title: string, bgcolor: string, isPublic: boolean) => void;
+  changeBoard: (
+    boardId: string,
+    field: string,
+    value: string | boolean | string[],
+  ) => void;
 }
 export const BoardContext = createContext({} as BoardContextData);
 
@@ -43,10 +48,12 @@ export function BoardContextProvider({ children }) {
   const [title, setTitle] = useState('');
   const [bgColor, setBgColor] = useState('');
   const [myBoards, setMyBoards] = useState([]);
+  const [isPublic, setIsPublic] = useState(false);
 
-  function putBoardData(title: string, bgColor: string) {
+  function putBoardData(title: string, bgColor: string, isPublic: boolean) {
     setTitle(title);
     setBgColor(bgColor);
+    setIsPublic(isPublic);
   }
 
   function putMyBoards(boards: any[]) {
@@ -73,14 +80,21 @@ export function BoardContextProvider({ children }) {
     }
   }
 
-  async function changeBoard(boardId: string, field: string, value: string) {
+  async function changeBoard(
+    boardId: string,
+    field: string,
+    value: string | boolean | string[],
+  ) {
     const retApi = await ApiCall(`/api/boards/${boardId}`, 'PATCH', {
       field: field,
       value: value,
     });
     if (retApi.success) {
-      if (field === 'title') setTitle(value);
-      if (field === 'background') setBgColor(value);
+      if (field === 'title') setTitle(String(value));
+      if (field === 'background') setBgColor(String(value));
+      if (field === 'isPublic') setIsPublic(Boolean(value));
+    }
+  }
     }
   }
 
@@ -91,6 +105,7 @@ export function BoardContextProvider({ children }) {
         bgOptions,
         title,
         bgColor,
+        isPublic,
         putMyBoards,
         createNewBoard,
         putBoardData,
