@@ -44,6 +44,7 @@
 
 .menuItems li,
 .menuBottom li {
+  cursor: pointer;
   padding: 6px 32px;
   display: flex;
   align-items: center;

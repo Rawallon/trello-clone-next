@@ -82,6 +82,9 @@
   z-index: 5;
   background-color: #f4f5f7;
   height: calc(100vh - 33px);
+
+  display: flex;
+  flex-direction: column;
 }
 
 .sideMenu.display {
@@ -144,4 +147,57 @@
 
 .flexGrow {
   flex-grow: 1;
+}
+.sideMenu fieldset {
+  border: none;
+}
+.sideMenu fieldset > div {
+  display: flex;
+  color: #172b4d;
+}
+
+.sideMenu fieldset label {
+  margin-left: 0.5rem;
+}
+
+.sideMenu textarea {
+  color: #172b4d;
+  margin: 0 12px;
+  width: calc(100% - 24px);
+}
+
+.addButton {
+  color: #61bd4f;
+  background: #61bd4f11;
+
+  border: 1px solid rgba(9, 30, 66, 0.13);
+  margin: auto 12px 2rem;
+}
+
+.addButton:hover {
+  color: #fff;
+  background: #61bd4f;
+}
+
+.deleteButton {
+  color: #b04632;
+  background: #b0473211;
+
+  border: 1px solid rgba(9, 30, 66, 0.13);
+  margin: auto 12px 2rem;
+}
+
+.deleteButton:hover {
+  color: #fff;
+  background: #b04632;
+}
+.button {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  position: relative;
+  height: 40px;
+
+  display: grid;
+  text-align: center;
+  align-items: center;
 }

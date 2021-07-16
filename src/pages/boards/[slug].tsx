@@ -31,12 +31,22 @@ export default function BoardSlug({
   bColor,
   isPublic,
   isAuthorized,
+  permissionList,
 }) {
   resetServerContext();
 
   const [session, loading] = useSession();
+  const router = useRouter();
 
-  const { putBoardData, changeBoard, title, bgColor, bgOptions } = useBoard();
+  const {
+    putBoardData,
+    changeBoard,
+    title,
+    bgColor,
+    bgOptions,
+    isPublic: isPublicContext,
+    deleteBoard,
+  } = useBoard();
   const { createList, putLists, currentList, moveList, getList } = useList();
   const {
     createInitialCard,
@@ -50,7 +60,7 @@ export default function BoardSlug({
 
   useEffect(() => {
     if (bTitle !== '' && bTitle !== undefined) {
-      putBoardData(bTitle, bColor);
+      putBoardData(bTitle, bColor, isPublic);
       putCards(cards);
       putLists(lists);
     }
@@ -86,10 +96,23 @@ export default function BoardSlug({
   function createListHandle(listData: string) {
     createList(bId, listData);
   }
+  function permissionListHandler(userIds: string) {
+    const trimUser = userIds.split(',').map((userId) => userId.trim());
+    changeBoard(bId, 'permissionList', trimUser);
+  }
+
+  async function deleteBoardHandler() {
+    const confirm = window.confirm(
+      'Are you sure you want to delete this board?',
+    );
+    if (confirm) {
+      await deleteBoard(bId);
+      router.push('/boards');
+    }
+  }
 
   if (typeof window !== 'undefined' && loading) return null;
   if (typeof window !== 'undefined' && !isPublic && !isAuthorized) {
-    const router = useRouter();
     router.push('/');
     return null;
   }
@@ -112,6 +135,14 @@ export default function BoardSlug({
         changeTitleHandler={(value) => changeBoard(bId, 'title', value)}
         title={bTitle}
         bgOptions={bgOptions}
+        isAuthorized={isAuthorized}
+        isPublic={isPublicContext}
+        setIsPublicHandler={(value) =>
+          changeBoard(bId, 'isPublic', Boolean(value))
+        }
+        permissionList={permissionList ? permissionList.join(', ') : ''}
+        permissionListHandler={permissionListHandler}
+        deleteBoardHandler={deleteBoardHandler}
       />
       <Droppable
         direction="horizontal"
@@ -184,6 +215,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       lists: data.lists,
       bColor: data.bgcolor,
       isPublic: data.isPublic,
+      permissionList: data.permissionList,
       isAuthorized,
       session,
     },
