@@ -8,9 +8,10 @@ import { BoardContextProvider } from '../context/BoardContext';
 import { CardsContextProvider } from '../context/CardsContext';
 import { ListContextProvider } from '../context/ListsContext';
 import { ModalContextProvider } from '../context/ModalContext';
+import ProtectedRoute from '../router/ProtectedRoute';
 import '../styles/globals.css';
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps, router }) {
   return (
     <>
       <HeadNext>
@@ -39,17 +40,20 @@ function MyApp({ Component, pageProps }) {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
       </HeadNext>
-    <NextAuthProvider session={pageProps.session}>
-      <BoardContextProvider>
-        <ListContextProvider>
-          <CardsContextProvider>
-            <ModalContextProvider>
-              <Component {...pageProps} />
-            </ModalContextProvider>
-          </CardsContextProvider>
-        </ListContextProvider>
-      </BoardContextProvider>
-    </NextAuthProvider>
+      <NextAuthProvider session={pageProps.session}>
+        <BoardContextProvider>
+          <ListContextProvider>
+            <CardsContextProvider>
+              <ModalContextProvider>
+                <ProtectedRoute router={router}>
+                  <Component {...pageProps} />
+                </ProtectedRoute>
+              </ModalContextProvider>
+            </CardsContextProvider>
+          </ListContextProvider>
+        </BoardContextProvider>
+      </NextAuthProvider>
+    </>
   );
 }
 
