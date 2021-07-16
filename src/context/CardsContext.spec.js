@@ -6,7 +6,6 @@ import { CardsContextProvider, useCards } from './CardsContext';
 const TestComponent = () => {
   const {
     currentCards,
-    fetchCards,
     putCards,
     updateCardData,
     createInitialCard,
@@ -37,7 +36,6 @@ const TestComponent = () => {
             },
           ])
         }></button>
-      <button data-testid="fetchCards" onClick={() => fetchCards(1)}></button>
       <button
         data-testid="createInitialCard"
         onClick={() =>
@@ -88,12 +86,6 @@ it('currentList value should be filled an with an item after clcking putCards', 
   expect(screen.getByText('Put Card')).toBeInTheDocument();
 });
 
-it('should fill the array with cards from the server when runing fetchCards', async () => {
-  expect(screen.getByTestId('value')).toHaveTextContent('');
-  fireEvent.click(screen.getByTestId('fetchCards'));
-  expect(await screen.findByText('Test Card 1')).toBeInTheDocument();
-});
-
 it('should contain updated card after runing updateCardData function', async () => {
   expect(screen.getByTestId('value')).toHaveTextContent('');
   fireEvent.click(screen.getByTestId('updateCardData'));
@@ -108,7 +100,6 @@ it('should create a new card after runing updateCardData function', async () => 
 
 it('should get first card data with getCard', async () => {
   expect(screen.getByTestId('value')).toHaveTextContent('');
-  fireEvent.click(screen.getByTestId('fetchCards'));
   expect(await screen.findByText('1-card')).toBeInTheDocument();
 });
 

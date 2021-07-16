@@ -16,7 +16,6 @@ interface FormData {
 interface CardsContextProps {
   currentCards: Card[];
   putCards: (fetchedCards: Card[]) => void;
-  fetchCards: (id: string) => void;
   createInitialCard: (boardId: string, formData: FormData) => void;
   moveCard: (
     boardId: string,
@@ -35,11 +34,6 @@ export function CardsContextProvider({ children }) {
 
   function putCards(fetchedCards: Card[]) {
     setCurrentCards(fetchedCards);
-  }
-
-  async function fetchCards(id: string) {
-    const retApi = await ApiCall('/board/' + id, 'GET');
-    setCurrentCards(retApi.cards);
   }
 
   async function createInitialCard(boardId: string, formData: FormData) {
@@ -101,7 +95,6 @@ export function CardsContextProvider({ children }) {
     <CardsContext.Provider
       value={{
         currentCards,
-        fetchCards,
         putCards,
         updateCardData,
         createInitialCard,
