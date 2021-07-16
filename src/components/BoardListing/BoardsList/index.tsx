@@ -22,7 +22,7 @@ export default function BoardsList({ boards, showModal }: BoardsList) {
             <BoardListItem
               key={b.id}
               title={b.title}
-              link={`/board/${b.id}`}
+              link={`/boards/${b.id}`}
               color={b.bgcolor}
             />
           ))}

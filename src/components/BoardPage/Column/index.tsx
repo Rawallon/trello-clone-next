@@ -10,6 +10,7 @@ interface ColumnProps {
   index: number;
   createCard: (value: string, id: string) => void;
   children: ReactNode;
+  isDropDisabled: boolean;
 }
 
 export default function Column({
@@ -18,6 +19,7 @@ export default function Column({
   index,
   createCard,
   children,
+  isDropDisabled,
 }: ColumnProps) {
   const [text, setText] = useState('');
   const [shouldClearText, setShouldClearText] = useState(false);
@@ -35,7 +37,7 @@ export default function Column({
     }
   }
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable draggableId={id} index={index} isDragDisabled={isDropDisabled}>
       {(provided) => (
         <div
           className={styles.column}
@@ -45,7 +47,11 @@ export default function Column({
           <div className={styles.title} id={id} {...provided.dragHandleProps}>
             {title}
           </div>
-          <Droppable type="CARD" key={id} droppableId={String(id)}>
+          <Droppable
+            type="CARD"
+            key={id}
+            droppableId={String(id)}
+            isDropDisabled={isDropDisabled}>
             {(provided, snapshot) => (
               <div
                 className={styles.droppable}
@@ -61,35 +67,39 @@ export default function Column({
               </div>
             )}
           </Droppable>
-          <footer
-            className={`${styles.footerColumn} ${
-              showForm ? styles.hidden : ''
-            }`}>
-            <button
-              className={styles.openForm}
-              onClick={() => setShowForm((prev) => !prev)}>
-              <PlusIcon /> Add card
-            </button>
-          </footer>
-          <footer
-            className={`${styles.footerColumn}
+          {isDropDisabled ? null : (
+            <>
+              <footer
+                className={`${styles.footerColumn} ${
+                  showForm ? styles.hidden : ''
+                }`}>
+                <button
+                  className={styles.openForm}
+                  onClick={() => setShowForm((prev) => !prev)}>
+                  <PlusIcon /> Add card
+                </button>
+              </footer>
+              <footer
+                className={`${styles.footerColumn}
               ${showForm ? '' : styles.hidden}`}>
-            <div className={styles.TextareaWrapper}>
-              <AutoResizableTextarea
-                shouldFocus={showForm}
-                textValue={text}
-                onChange={setText}
-                placeholder="Enter a title for this card..."
-                className={styles.AutoTextarea}
-                onKeyPress={onPassHandler}
-                shouldClearText={shouldClearText}
-                setShouldClearText={setShouldClearText}
-              />
-            </div>
-            <button className={styles.addCard} onClick={createCardHandler}>
-              Add card
-            </button>
-          </footer>
+                <div className={styles.TextareaWrapper}>
+                  <AutoResizableTextarea
+                    shouldFocus={showForm}
+                    textValue={text}
+                    onChange={setText}
+                    placeholder="Enter a title for this card..."
+                    className={styles.AutoTextarea}
+                    onKeyPress={onPassHandler}
+                    shouldClearText={shouldClearText}
+                    setShouldClearText={setShouldClearText}
+                  />
+                </div>
+                <button className={styles.addCard} onClick={createCardHandler}>
+                  Add card
+                </button>
+              </footer>
+            </>
+          )}
         </div>
       )}
     </Draggable>

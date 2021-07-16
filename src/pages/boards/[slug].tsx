@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { getSession, useSession } from 'next-auth/client';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import {
@@ -8,6 +9,7 @@ import {
   Droppable,
   resetServerContext,
 } from 'react-beautiful-dnd';
+
 import AddList from '../../components/BoardPage/AddList';
 import Card from '../../components/BoardPage/Card';
 import Column from '../../components/BoardPage/Column';
@@ -34,15 +36,16 @@ export default function BoardSlug({
   cards,
   lists,
   bColor,
+  isPublic,
   isAuthorized,
 }) {
   resetServerContext();
+
   const [session, loading] = useSession();
 
   const { putBoardData, changeBoard, title, bgColor, bgOptions } = useBoard();
   const { createList, putLists, currentList, moveList, getList } = useList();
   const {
-    fetchCards,
     createInitialCard,
     putCards,
     currentCards,
@@ -60,11 +63,6 @@ export default function BoardSlug({
     }
   }, [cards, lists]);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      fetchCards(bId);
-    }
-  }, []);
   function updateCardHandler(cardData: ICard) {
     updateCardData(bId, cardData);
   }
@@ -97,74 +95,80 @@ export default function BoardSlug({
   }
 
   if (typeof window !== 'undefined' && loading) return null;
-  if (session && isAuthorized) {
-    return (
-      <DragDropContext onDragEnd={dragEndHandle}>
-        <Head>
-          <title>{title}</title>
-        </Head>
-        <div
-          className={styles.backgroundHolder}
-          style={{ backgroundColor: bgColor }}
-        />
-        <ModalPortal
-          getList={getList}
-          getCard={getCard}
-          updateCardData={updateCardHandler}
-        />
-        <ColumnHeader
-          changeBgHandler={(value) => changeBoard(bId, 'background', value)}
-          changeTitleHandler={(value) => changeBoard(bId, 'title', value)}
-          title={bTitle}
-          bgOptions={bgOptions}
-        />
-        <Droppable direction="horizontal" type="COLUMN" droppableId="board">
-          {(provided, snapshot) => (
-            <div
-              className={styles.BoardWrapper}
-              ref={provided.innerRef}
-              {...provided.droppableProps}>
-              {currentList.map((column, index) => (
-                <Column
-                  createCard={createCard}
-                  title={column.title}
-                  id={column.id}
-                  key={column.id}
-                  index={index}>
-                  {currentCards
-                    .filter((item) => item.list === String(column.id))
-                    .map((item, index) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            id={item.id}
-                            onClick={() => showModal(item.id)}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            draggable={true}>
-                            <Card id={item.id}>{item.name}</Card>
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                </Column>
-              ))}
-              {provided.placeholder}
-              <AddList createList={createListHandle} />
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
-  } else {
-    //TODO: Create anauthorized access page
+  if (typeof window !== 'undefined' && !isPublic && !isAuthorized) {
+    const router = useRouter();
+    router.push('/');
     return null;
   }
+  return (
+    <DragDropContext onDragEnd={dragEndHandle}>
+      <Head>
+        <title>{title} - Nello</title>
+      </Head>
+      <div
+        className={styles.backgroundHolder}
+        style={{ backgroundColor: bgColor }}
+      />
+      <ModalPortal
+        getList={getList}
+        getCard={getCard}
+        updateCardData={updateCardHandler}
+      />
+      <ColumnHeader
+        changeBgHandler={(value) => changeBoard(bId, 'background', value)}
+        changeTitleHandler={(value) => changeBoard(bId, 'title', value)}
+        title={bTitle}
+        bgOptions={bgOptions}
+      />
+      <Droppable
+        direction="horizontal"
+        type="COLUMN"
+        droppableId="board"
+        isDropDisabled={!isAuthorized}>
+        {(provided, snapshot) => (
+          <div
+            className={styles.BoardWrapper}
+            ref={provided.innerRef}
+            {...provided.droppableProps}>
+            {currentList.map((column, index) => (
+              <Column
+                createCard={createCard}
+                title={column.title}
+                id={column.id}
+                key={column.id}
+                index={index}
+                isDropDisabled={!isAuthorized}>
+                {currentCards
+                  .filter((item) => item.list === String(column.id))
+                  .map((item, index) => (
+                    <Draggable
+                      isDragDisabled={!isAuthorized}
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}>
+                      {(provided, snapshot) => (
+                        <div
+                          id={item.id}
+                          onClick={() => showModal(item.id)}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          draggable={true}>
+                          <Card id={item.id}>{item.name}</Card>
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+              </Column>
+            ))}
+            {provided.placeholder}
+            {isAuthorized && <AddList createList={createListHandle} />}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -172,11 +176,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { slug } = ctx.params;
 
   const data: Board = await ApiCall(`http://localhost:3000/api/boards/${slug}`);
-
-  const isAuthorized =
-    data.isPublic ||
-    String(data.author) === String(session.user.userId) ||
-    data.permissionList.includes(String(session.user.userId));
+  let isAuthorized = false;
+  if (session) {
+    isAuthorized =
+      String(data.author) === String(session.user.userId) ||
+      data.permissionList.includes(String(session.user.userId));
+  }
 
   return {
     props: {
@@ -185,6 +190,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       cards: data.cards,
       lists: data.lists,
       bColor: data.bgcolor,
+      isPublic: data.isPublic,
       isAuthorized,
       session,
     },

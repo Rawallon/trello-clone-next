@@ -1,11 +1,11 @@
-import { getSession, useSession } from 'next-auth/client';
+import { getSession, signOut, useSession } from 'next-auth/client';
 import { useEffect, useState } from 'react';
-import AddBoardModal from '../components/BoardListing/AddBoardModal';
-import BoardsList from '../components/BoardListing/BoardsList';
-import ProfileSideBar from '../components/BoardListing/ProfileSideBar';
-import { Board, useBoard } from '../context/BoardContext';
-import styles from '../styles/BoardListing.module.css';
-import ApiCall from '../utils/API';
+import AddBoardModal from '../../components/BoardListing/AddBoardModal';
+import BoardsList from '../../components/BoardListing/BoardsList';
+import ProfileSideBar from '../../components/BoardListing/ProfileSideBar';
+import { Board, useBoard } from '../../context/BoardContext';
+import styles from '../../styles/BoardListing.module.css';
+import ApiCall from '../../utils/API';
 
 interface apiReturn {
   username: any;
@@ -56,6 +56,7 @@ export default function BoardListing({ boards }) {
         <ProfileSideBar
           username={session.user.name}
           picture={session.user.image}
+          signOut={signOut}
         />
         <BoardsList boards={myBoards} showModal={toggleModal} />
       </div>
@@ -65,6 +66,7 @@ export default function BoardListing({ boards }) {
 
 export async function getServerSideProps(context) {
   const session = (await getSession(context)) as unknown as sessionReturn;
+  if (!session) return { props: {} };
   const data: apiReturn = await ApiCall(
     `http://localhost:3000/api/boards?userid=${session.user.userId}`,
   );
