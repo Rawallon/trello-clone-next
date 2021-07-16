@@ -45,8 +45,9 @@ export default async function handler(
 
       const { field, value } = req.body as patchBody;
       const { slug } = req.query;
-      if (!field || !value || !slug) {
+      if (!field || value.length === 0 || !slug) {
         res.status(400).send({ error: 'Bad request' });
+        return;
       }
 
       let data;
@@ -57,6 +58,14 @@ export default async function handler(
       } else if (field === 'title') {
         data = {
           title: value ?? 'My board',
+        };
+      } else if (field === 'isPublic') {
+        data = {
+          isPublic: value,
+        };
+      } else if (field === 'permissionList') {
+        data = {
+          permissionList: value,
         };
       }
 
