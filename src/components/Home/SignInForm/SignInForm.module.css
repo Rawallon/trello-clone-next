@@ -1,0 +1,15 @@
+.signInForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 8px 16px -4px rgb(9 30 66 / 25%), 0 0 0 1px rgb(9 30 66 / 8%);
+  padding: 2rem;
+  border-radius: 8px;
+  margin: 0 3.75rem;
+}
+.signInForm h1 {
+  margin-top: 0;
+  margin-bottom: 4rem;
+}
