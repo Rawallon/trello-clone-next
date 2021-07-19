@@ -35,7 +35,6 @@ export default async function handler(
         title: title ?? 'My board',
         bgcolor: bgColor ?? 'rgb(210, 144, 52)',
         permissionList: [],
-        lists: lists ?? [],
         cards: cards ?? [],
         author: new ObjectId(session.user.userId),
         isPublic: isPublic || false,

@@ -12,6 +12,7 @@ interface ListContextProps {
   createList: (boardId: string, title: string) => void;
   moveList: (boardId: string, listId: string, insertIndex: number) => void;
   getList: (lID: string) => List;
+  changeListTitle: (boardId: string, listId: string, value: string) => void;
 }
 
 export const ListContext = createContext({} as ListContextProps);
@@ -24,13 +25,31 @@ export function ListContextProvider({ children }) {
   }
 
   async function createList(boardId: string, title: string) {
-    const id = Math.random().toString(10).substr(2, 9);
     const retApi = await ApiCall(`/api/boards/${boardId}/lists`, 'POST', {
-      newList: { id: `${id}-card`, title },
+      title,
+      position: currentList.length + 1,
       boardId,
     });
     if (retApi.success) {
-      setCurrentList((oldList) => [...oldList, { id: `${id}-card`, title }]);
+      setCurrentList((oldList) => [...oldList, { id: retApi.id, title }]);
+    }
+  }
+
+  async function changeListTitle(
+    boardId: string,
+    listId: string,
+    value: string,
+  ) {
+    const retApi = await ApiCall(`/api/boards/${boardId}/lists`, 'PATCH', {
+      title: value,
+      listId,
+    });
+    if (retApi.success) {
+      setCurrentList((oldList) =>
+        oldList.map((list) =>
+          list.id === listId ? { ...list, title: value } : list,
+        ),
+      );
     }
   }
 
@@ -42,13 +61,13 @@ export function ListContextProvider({ children }) {
     const retApi = await ApiCall(`/api/boards/${boardId}/lists`, 'PATCH', {
       listId,
       insertIndex,
-      boardId,
     });
-
-    const cIndex = currentList.findIndex((c) => c.id === listId);
-    const newList = [...currentList];
-    newList.splice(insertIndex, 0, newList.splice(cIndex, 1)[0]);
-    setCurrentList(newList);
+    if (retApi.success) {
+      const cIndex = currentList.findIndex((c) => c.id === listId);
+      const newList = [...currentList];
+      newList.splice(insertIndex, 0, newList.splice(cIndex, 1)[0]);
+      setCurrentList(newList);
+    }
   }
 
   function getList(lID) {
@@ -63,6 +82,7 @@ export function ListContextProvider({ children }) {
         createList,
         moveList,
         getList,
+        changeListTitle,
       }}>
       {children}
     </ListContext.Provider>
