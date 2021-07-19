@@ -4,8 +4,6 @@ import { insert, update } from '../../../../utils/database';
 import { idGenerator } from '../../../../utils/idGenerator';
 import { sessionReturn } from './../../../../utils/interfaces';
 
-const BOARDS_COLLECTION = 'boards';
-
 interface postBody {
   name: string;
   listId: string;
@@ -52,6 +50,7 @@ export default async function handler(req, res) {
         updatedAt: Date.now(),
         list: listId,
         boardId: slug,
+        closed: false,
       };
       const card = await insert(CARDS_COLLECTION, newCard);
 
@@ -82,6 +81,7 @@ export default async function handler(req, res) {
         {
           list: toId,
           position: insertIndex,
+          updatedAt: Date.now(),
         },
       );
 
@@ -103,7 +103,7 @@ export default async function handler(req, res) {
       const isCardUpdated = await update(
         CARDS_COLLECTION,
         { id: cardId, boardId },
-        { name, description },
+        { name, description, updatedAt: Date.now() },
       );
       if (isCardUpdated) {
         res.status(200).send({ success: true });

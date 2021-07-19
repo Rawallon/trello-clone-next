@@ -13,6 +13,7 @@ interface ListContextProps {
   moveList: (boardId: string, listId: string, insertIndex: number) => void;
   getList: (lID: string) => List;
   changeListTitle: (boardId: string, listId: string, value: string) => void;
+  archiveList: (boardId: string, listId: string, value: boolean) => void;
 }
 
 export const ListContext = createContext({} as ListContextProps);
@@ -53,6 +54,20 @@ export function ListContextProvider({ children }) {
     }
   }
 
+  async function archiveList(
+    boardId: string,
+    listId: string,
+    value = true as boolean,
+  ) {
+    const retApi = await ApiCall(`/api/boards/${boardId}/lists`, 'PATCH', {
+      closed: value,
+      listId,
+    });
+    if (retApi.success) {
+      setCurrentList((oldList) => oldList.filter((list) => list.id !== listId));
+    }
+  }
+
   async function moveList(
     boardId: string,
     listId: string,
@@ -83,6 +98,7 @@ export function ListContextProvider({ children }) {
         moveList,
         getList,
         changeListTitle,
+        archiveList,
       }}>
       {children}
     </ListContext.Provider>

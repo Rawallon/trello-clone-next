@@ -40,6 +40,7 @@ export default async function handler(
         LISTS_COLLECTION,
         {
           boardId: String(board[0].id),
+          closed: false,
         },
         [],
         { position: 1 },
@@ -48,6 +49,7 @@ export default async function handler(
         CARDS_COLLECTION,
         {
           boardId: String(board[0].id),
+          closed: false,
         },
         [],
         { position: 1 },

@@ -11,8 +11,9 @@ interface postBody {
 
 interface patchBody {
   listId: string;
-  insertIndex: number;
-  title: string;
+  insertIndex?: number;
+  title?: string;
+  closed?: boolean;
 }
 
 export default async function handler(req, res) {
@@ -36,9 +37,10 @@ export default async function handler(req, res) {
       const data = {
         id,
         title,
-        slug,
+        boardId: slug,
         authorId: session.user.userId,
         position,
+        closed: false,
       };
       const board = await insert(LISTS_COLLECTION, data);
       if (board) {
@@ -53,13 +55,15 @@ export default async function handler(req, res) {
         res.status(403).send({ error: 'Bad author id' });
         return;
       }
-      const { listId, insertIndex, title } = req.body as patchBody;
+      const { listId, insertIndex, title, closed } = req.body as patchBody;
 
       let data;
       if (insertIndex !== undefined) {
         data = { position: insertIndex };
       } else if (title !== undefined) {
         data = { title };
+      } else if (closed !== undefined) {
+        data = { closed };
       }
 
       if (!listId) {
