@@ -36,7 +36,6 @@ export default function Column({
   }
 
   function onChangeHandler(value: string) {
-    console.log('onchange', value);
     if (isEditingTitle) {
       setEditedTitle(value);
     }
