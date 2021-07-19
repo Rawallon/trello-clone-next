@@ -1,18 +1,18 @@
-import { ObjectId } from 'mongodb';
 import { getSession } from 'next-auth/client';
-import { BOARDS_COLLECTION } from '../../../../utils/constants';
-import { find, updateById, updatePushById } from '../../../../utils/database';
+import { LISTS_COLLECTION } from '../../../../utils/constants';
+import { insert, remove, update } from '../../../../utils/database';
+import { idGenerator } from '../../../../utils/idGenerator';
 import { sessionReturn } from '../../../../utils/interfaces';
 
 interface postBody {
-  newList: string;
-  boardId: string;
+  title: string;
+  position: number;
 }
 
 interface patchBody {
   listId: string;
   insertIndex: number;
-  boardId: string;
+  title: string;
 }
 
 export default async function handler(req, res) {
@@ -20,23 +20,29 @@ export default async function handler(req, res) {
   const requestType = req.method;
   switch (requestType) {
     case 'POST': {
+      const { slug } = req.query;
+      const { title, position } = req.body as postBody;
+
+      if (!slug) {
+        res.status(400).send({ error: 'No board id' });
+        return;
+      }
       if (!session?.user?.userId) {
         res.status(403).send({ error: 'Bad author id' });
         return;
       }
 
-      const { newList, boardId } = req.body as postBody;
-      const updateReturn = updatePushById(
-        BOARDS_COLLECTION,
-        new ObjectId(boardId),
-        new ObjectId(String(session.user.userId)),
-        {
-          lists: newList,
-        },
-      );
-
-      if (updateReturn) {
-        res.status(200).send({ success: true });
+      const id = idGenerator();
+      const data = {
+        id,
+        title,
+        slug,
+        authorId: session.user.userId,
+        position,
+      };
+      const board = await insert(LISTS_COLLECTION, data);
+      if (board) {
+        res.status(200).send({ success: board, id: board });
       } else {
         res.status(404).send({ success: false });
       }
@@ -47,26 +53,48 @@ export default async function handler(req, res) {
         res.status(403).send({ error: 'Bad author id' });
         return;
       }
+      const { listId, insertIndex, title } = req.body as patchBody;
 
-      const { listId, insertIndex, boardId } = req.body as patchBody;
+      let data;
+      if (insertIndex !== undefined) {
+        data = { position: insertIndex };
+      } else if (title !== undefined) {
+        data = { title };
+      }
 
-      const oldBoard = await find(BOARDS_COLLECTION, {
-        _id: new ObjectId(boardId),
-        author: new ObjectId(String(session.user.userId)),
-      });
+      if (!listId) {
+        res.status(400).send({ error: 'No list id' });
+        return;
+      }
+      if (!data) {
+        res.status(400).send({ error: 'No action to take' });
+        return;
+      }
 
-      const cIndex = oldBoard[0].lists.findIndex((c) => c.id === listId);
-      const newList = [...oldBoard[0].lists];
-      newList.splice(insertIndex, 0, newList.splice(cIndex, 1)[0]);
-
-      const updateReturn = updateById(
-        BOARDS_COLLECTION,
-        new ObjectId(boardId),
-        new ObjectId(String(session.user.userId)),
-        { lists: newList },
-      );
+      const updateReturn = update(LISTS_COLLECTION, { id: listId }, data);
 
       if (updateReturn) {
+        res.status(200).send({ success: true });
+      } else {
+        res.status(404).send({ success: false });
+      }
+      return;
+    }
+    case 'DELETE': {
+      if (!session?.user?.userId) {
+        res.status(403).send({ error: 'Bad author id' });
+        return;
+      }
+      const { listId } = req.query;
+
+      if (!listId) {
+        res.status(400).send({ error: 'No list id' });
+        return;
+      }
+      const isRemoved = await remove(LISTS_COLLECTION, {
+        id: listId,
+      });
+      if (isRemoved) {
         res.status(200).send({ success: true });
       } else {
         res.status(404).send({ success: false });

@@ -6,7 +6,6 @@ export default function ProtectedRoute({ router, children }) {
   let unprotectedRoutes = ['/', '/boards/[slug]'];
   let pathIsProtected = unprotectedRoutes.indexOf(router.pathname) === -1;
   if (loading) return null;
-  console.log(router.pathname);
 
   if (typeof window !== 'undefined' && !session && pathIsProtected) {
     router.push('/');

@@ -1,18 +1,18 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import { useModal } from '../../../context/ModalContext';
 import marked from 'marked';
-import AutoResizableTextarea from '../AutoResizableTextarea';
-import { CloseIcon } from '../../Icons';
-import styles from './modalportal.module.css';
-import FormatingHelp from '../FormatingHelp';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Card } from '../../../context/CardsContext';
 import { List } from '../../../context/ListsContext';
+import { useModal } from '../../../context/ModalContext';
+import { CloseIcon } from '../../Icons';
+import AutoResizableTextarea from '../AutoResizableTextarea';
+import FormatingHelp from '../FormatingHelp';
+import styles from './modalportal.module.css';
 
 interface ModalPortal {
   getList: (value: string) => List;
   getCard: (value: string) => Card;
-  updateCardData: (newData: Card) => void;
+  updateCardData: (cardId: string, title: string, description: string) => void;
 }
 
 function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
@@ -55,7 +55,7 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
   function hideModalHandle() {
     // setEditingDesc(false);
     if (window.confirm('Do you want to save your changes?')) {
-      updateCardData(cardData);
+      updateCardData(cardData.id, cardData.name, cardData.description);
     }
     hideModal();
   }

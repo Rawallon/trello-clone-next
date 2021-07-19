@@ -1,18 +1,21 @@
 import { getSession } from 'next-auth/client';
-import { ObjectId } from 'mongodb';
-import { Card } from '../../../../context/CardsContext';
-import { find, updateById, updatePushById } from '../../../../utils/database';
+import { CARDS_COLLECTION } from '../../../../utils/constants';
+import { insert, update } from '../../../../utils/database';
+import { idGenerator } from '../../../../utils/idGenerator';
 import { sessionReturn } from './../../../../utils/interfaces';
 
 const BOARDS_COLLECTION = 'boards';
 
 interface postBody {
-  boardId: string;
-  newCard: Card;
+  name: string;
+  listId: string;
+  position: number;
 }
 interface putBody {
   boardId: string;
-  newData: Card;
+  cardId: string;
+  name: string;
+  description: string;
 }
 
 interface patchBody {
@@ -28,24 +31,32 @@ export default async function handler(req, res) {
   const requestType = req.method;
   switch (requestType) {
     case 'POST': {
+      const { slug } = req.query;
+      if (!slug) {
+        res.status(400).send({ error: 'No board id' });
+        return;
+      }
       if (!session?.user?.userId) {
         res.status(403).send({ error: 'Bad author id' });
         return;
       }
+      const { name, listId, position } = req.body as postBody;
 
-      const { newCard, boardId } = req.body as postBody;
+      const newCard = {
+        id: idGenerator(),
+        name: name,
+        authorId: session.user.userId,
+        description: '',
+        position,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        list: listId,
+        boardId: slug,
+      };
+      const card = await insert(CARDS_COLLECTION, newCard);
 
-      const addedCard = await updatePushById(
-        BOARDS_COLLECTION,
-        new ObjectId(boardId),
-        new ObjectId(String(session.user.userId)),
-        {
-          cards: newCard,
-        },
-      );
-
-      if (addedCard) {
-        res.status(200).send({ success: true });
+      if (card) {
+        res.status(200).send({ success: true, id: card });
       } else {
         res.status(404).send({ success: false });
       }
@@ -53,26 +64,24 @@ export default async function handler(req, res) {
     }
 
     case 'PATCH': {
+      const { slug } = req.query;
+      if (!slug) {
+        res.status(400).send({ error: 'No board id' });
+        return;
+      }
       if (!session?.user?.userId) {
         res.status(403).send({ error: 'Bad author id' });
         return;
       }
 
-      const { cardId, toId, insertIndex, boardId } = req.body as patchBody;
-      const oldBoard = await find(BOARDS_COLLECTION, new ObjectId(boardId));
+      const { cardId, toId, insertIndex } = req.body as patchBody;
 
-      const cIndex = oldBoard[0].cards.findIndex((c) => c.id === cardId);
-      const newCards = [...oldBoard[0].cards];
-      const cCard = newCards.splice(cIndex, 1)[0];
-      cCard.list = toId;
-      newCards.splice(insertIndex, 0, cCard);
-
-      const updateReturn = await updateById(
-        BOARDS_COLLECTION,
-        new ObjectId(boardId),
-        new ObjectId(String(session.user.userId)),
+      const updateReturn = await update(
+        CARDS_COLLECTION,
+        { id: cardId, boardId: slug },
         {
-          cards: newCards,
+          list: toId,
+          position: insertIndex,
         },
       );
 
@@ -81,7 +90,7 @@ export default async function handler(req, res) {
       } else {
         res.status(404).send({ success: false });
       }
-      return res.status(400);
+      return;
     }
 
     case 'PUT': {
@@ -90,33 +99,18 @@ export default async function handler(req, res) {
         return;
       }
 
-      const { newData, boardId } = req.body as putBody;
-      const oldBoard = await find(BOARDS_COLLECTION, {
-        _id: new ObjectId(boardId),
-        'cards.id': newData.id,
-      });
-
-      const cIndex = oldBoard[0].cards.findIndex((c) => c.id === newData.id);
-      const newCards = [...oldBoard[0].cards];
-      newCards.splice(cIndex, 1)[0];
-      const cCard = newData;
-      newCards.splice(cIndex, 0, cCard);
-
-      const editedCard = updateById(
-        BOARDS_COLLECTION,
-        new ObjectId(boardId),
-        new ObjectId(String(session.user.userId)),
-        {
-          cards: newCards,
-        },
+      const { boardId, cardId, name, description } = req.body as putBody;
+      const isCardUpdated = await update(
+        CARDS_COLLECTION,
+        { id: cardId, boardId },
+        { name, description },
       );
-
-      if (editedCard) {
+      if (isCardUpdated) {
         res.status(200).send({ success: true });
       } else {
         res.status(404).send({ success: false });
       }
-      return res.status(400);
+      return;
     }
   }
 }

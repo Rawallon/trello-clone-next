@@ -8,15 +8,10 @@ export interface Card {
   list: string;
 }
 
-interface FormData {
-  name: string;
-  list: string;
-}
-
 interface CardsContextProps {
   currentCards: Card[];
   putCards: (fetchedCards: Card[]) => void;
-  createInitialCard: (boardId: string, formData: FormData) => void;
+  createInitialCard: (boardId: string, name: string, listId: string) => void;
   moveCard: (
     boardId: string,
     cardId: string,
@@ -24,7 +19,12 @@ interface CardsContextProps {
     insertIndex: number,
   ) => void;
   getCard: (cId: String) => Card;
-  updateCardData: (boardId: string, newData: Card) => void;
+  updateCardData: (
+    boardId: string,
+    cardId: string,
+    name: string,
+    description: string,
+  ) => void;
 }
 
 export const CardsContext = createContext({} as CardsContextProps);
@@ -36,21 +36,23 @@ export function CardsContextProvider({ children }) {
     setCurrentCards(fetchedCards);
   }
 
-  async function createInitialCard(boardId: string, formData: FormData) {
-    const id = Math.random().toString(10).substr(2, 9);
-    const newCard = {
-      id: `${id}-card`,
-      name: formData.name,
-      description: '',
-      createdat: Date.now(),
-      list: String(formData.list),
-    };
-
+  async function createInitialCard(
+    boardId: string,
+    name: string,
+    listId: string,
+  ) {
+    const position = currentCards.map((card) => card.list === listId).length;
     const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'POST', {
-      newCard,
-      boardId,
+      name,
+      listId,
+      position: position + 1,
     });
-    setCurrentCards((oldcards) => [...oldcards, newCard]);
+    if (retApi.success) {
+      setCurrentCards((oldcards) => [
+        ...oldcards,
+        { id: retApi.id, name, list: listId },
+      ]);
+    }
   }
 
   async function moveCard(
@@ -79,16 +81,24 @@ export function CardsContextProvider({ children }) {
     return currentCards.filter((card) => card.id === cId)[0];
   }
 
-  async function updateCardData(boardId: string, newData: Card) {
+  async function updateCardData(
+    boardId: string,
+    cardId: string,
+    name: string,
+    description: string,
+  ) {
     const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'PUT', {
-      newData,
       boardId,
+      cardId,
+      name,
+      description,
     });
     if (retApi.success) {
-      const filterCards = currentCards.map((card) =>
-        card.id === newData.id ? newData : card,
+      setCurrentCards((oldCards) =>
+        oldCards.map((card) =>
+          card.id === cardId ? { ...card, name, description } : card,
+        ),
       );
-      setCurrentCards(filterCards);
     }
   }
   return (
