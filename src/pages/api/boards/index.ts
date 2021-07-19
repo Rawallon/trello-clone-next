@@ -6,6 +6,13 @@ import { BOARDS_COLLECTION } from '../../../utils/constants';
 import { find, insert } from '../../../utils/database';
 import { sessionReturn } from './../../../utils/interfaces';
 
+interface postBody {
+  title: string;
+  bgColor: string;
+  author: string;
+  isPublic: boolean;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -15,8 +22,7 @@ export default async function handler(
 
   switch (requestType) {
     case 'POST': {
-      const { title, bgColor, lists, cards, author, isPublic } =
-        req.body as Board;
+      const { title, bgColor, author, isPublic } = req.body as postBody;
 
       if (!author) {
         res.status(400).send({ error: 'Missing author' });

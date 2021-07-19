@@ -1,9 +1,13 @@
-import { getSession } from 'next-auth/client';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/client';
 import { Board } from '../../../context/BoardContext';
-import { BOARDS_COLLECTION } from '../../../utils/constants';
-import { find, removeById, updateById } from '../../../utils/database';
+import {
+  BOARDS_COLLECTION,
+  CARDS_COLLECTION,
+  LISTS_COLLECTION,
+} from '../../../utils/constants';
+import { find, remove, update } from '../../../utils/database';
 import { sessionReturn } from '../../../utils/interfaces';
 interface patchBody {
   field: string;
@@ -18,8 +22,6 @@ export default async function handler(
   const requestType = req.method;
   switch (requestType) {
     case 'GET': {
-      console.log(session);
-
       const { slug } = req.query;
       if (!slug) {
         res.status(400).send({ error: 'Missing boardId' });
@@ -33,7 +35,25 @@ export default async function handler(
         res.status(404).send({ error: 'Board not found' });
         return;
       }
-      res.send(board[0]);
+
+      const lists = await find(
+        LISTS_COLLECTION,
+        {
+          boardId: String(board[0].id),
+        },
+        [],
+        { position: 1 },
+      );
+      const cards = await find(
+        CARDS_COLLECTION,
+        {
+          boardId: String(board[0].id),
+        },
+        [],
+        { position: 1 },
+      );
+
+      res.send({ ...board[0], lists, cards });
       return;
     }
 
@@ -69,10 +89,12 @@ export default async function handler(
         };
       }
 
-      const isBoardUpdated = await updateById(
+      const isBoardUpdated = await update(
         BOARDS_COLLECTION,
-        new ObjectId(String(slug)),
-        new ObjectId(String(session.user.userId)),
+        {
+          _id: new ObjectId(String(slug)),
+          author: new ObjectId(String(session.user.userId)),
+        },
         data,
       );
       if (isBoardUpdated) {
@@ -90,11 +112,10 @@ export default async function handler(
       }
       const { slug } = req.query;
 
-      const deleteBoard = await removeById(
-        BOARDS_COLLECTION,
-        new ObjectId(String(slug)),
-        new ObjectId(String(session.user.userId)),
-      );
+      const deleteBoard = await remove(BOARDS_COLLECTION, {
+        id: new ObjectId(String(slug)),
+        author: new ObjectId(String(session.user.userId)),
+      });
       if (deleteBoard) {
         res.status(200).send({ success: true });
       } else {
