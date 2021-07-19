@@ -30,10 +30,35 @@
   overflow: hidden;
 }
 .title {
+  display: flex;
+  align-items: center;
+
   flex: 0 0 auto;
   padding: 10px 8px;
   position: relative;
   min-height: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.column:hover > div > div {
+  /* display: block; */
+  opacity: 1;
+}
+.title > div {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  align-self: flex-end;
+  opacity: 0;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+.title > div:hover {
+  background: rgba(9, 30, 66, 0.08);
+}
+.title > div:hover > svg {
+  fill: currentColor;
+  fill-opacity: 0.5;
 }
 
 .droppable {

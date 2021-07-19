@@ -53,7 +53,6 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
   }
 
   function hideModalHandle() {
-    // setEditingDesc(false);
     if (window.confirm('Do you want to save your changes?')) {
       updateCardData(cardData.id, cardData.name, cardData.description);
     }
@@ -123,7 +122,7 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
             <div
               onClick={() => setEditingDesc(!editingDesc)}
               dangerouslySetInnerHTML={{
-                __html: marked(cardData.description),
+                __html: marked(cardData.description ?? ''),
               }}
             />
           )}

@@ -53,6 +53,7 @@ export default function BoardSlug({
     moveList,
     getList,
     changeListTitle,
+    archiveList,
   } = useList();
   const {
     createInitialCard,
@@ -113,6 +114,9 @@ export default function BoardSlug({
   function changeListTitleHandler(listId: string, listTitle: string) {
     changeListTitle(bId, listId, listTitle);
   }
+  function archiveListHandler(listId: string, value: boolean) {
+    archiveList(bId, listId, value);
+  }
 
   async function deleteBoardHandler() {
     const confirm = window.confirm(
@@ -170,6 +174,7 @@ export default function BoardSlug({
             {currentList.map((column, index) => (
               <Column
                 changeListTitle={changeListTitleHandler}
+                archiveListHandler={archiveListHandler}
                 createCard={createCard}
                 title={column.title}
                 id={column.id}

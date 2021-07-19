@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import AutoResizableTextarea from '../AutoResizableTextarea';
-import { PlusIcon } from '../../Icons';
+import { PlusIcon, TrashIcon } from '../../Icons';
 import styles from './column.module.css';
 
 interface ColumnProps {
@@ -12,6 +12,7 @@ interface ColumnProps {
   children: ReactNode;
   isDropDisabled: boolean;
   changeListTitle: (listId: string, title: string) => void;
+  archiveListHandler: (listId: string, value: boolean) => void;
 }
 
 export default function Column({
@@ -22,6 +23,7 @@ export default function Column({
   children,
   isDropDisabled,
   changeListTitle,
+  archiveListHandler,
 }: ColumnProps) {
   const [text, setText] = useState('');
   const [editedTitle, setEditedTitle] = useState(() => title);
@@ -61,6 +63,17 @@ export default function Column({
     }
   }
 
+  function deleteButtonHandler(event) {
+    event.stopPropagation();
+    if (
+      window.confirm(
+        `Are you sure you want to delete this column?\n\nATTENTION: This will delete all cards`,
+      )
+    ) {
+      archiveListHandler(id, true);
+    }
+  }
+
   return (
     <Draggable draggableId={id} index={index} isDragDisabled={isDropDisabled}>
       {(provided) => (
@@ -76,6 +89,9 @@ export default function Column({
               {...provided.dragHandleProps}
               onClick={() => setIsEditingTitle(true)}>
               {title}
+              <div id="col-opts" onClick={deleteButtonHandler}>
+                <TrashIcon />
+              </div>
             </div>
           ) : (
             <AutoResizableTextarea
