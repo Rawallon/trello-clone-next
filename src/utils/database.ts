@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { queryParser } from './mongoHelper';
 
 const { DATABASE_URL, MONGODB_DB } = process.env;
 
@@ -49,7 +50,7 @@ export async function insert(collection: string, data: any): Promise<string> {
   }
   const insertReturn = await cached.conn.db
     .collection(collection)
-    .insertOne(data);
+    .insertOne(queryParser(data));
   return insertReturn.insertedId;
 }
 
@@ -66,7 +67,7 @@ export async function find(
   projection.map((el) => (projectionObj[el] = 1));
   const findReturn = await cached.conn.db
     .collection(collection)
-    .find(filter)
+    .find(queryParser(filter))
     .project(projectionObj)
     .sort(sort)
     .toArray();
@@ -84,7 +85,7 @@ export async function update(
   const updateReturn = await cached.conn.db
     .collection(collection)
     .updateOne(filter, {
-      $set: newData,
+      $set: queryParser(newData),
     });
   if (updateReturn.modifiedCount > 0) {
     return true;
@@ -102,7 +103,7 @@ export async function remove(
   }
   const insertReturn = await cached.conn.db
     .collection(collection)
-    .deleteOne(filter);
+    .deleteOne(queryParser(filter));
   if (insertReturn.deletedCount > 0) {
     return true;
   } else {
