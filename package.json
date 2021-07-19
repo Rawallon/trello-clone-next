@@ -40,5 +40,8 @@
   },
   "msw": {
     "workerDirectory": "public"
+  },
+  "peerOptionalDependencies": {
+    "mongodb": "^3.5.9"
   }
 }
