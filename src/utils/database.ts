@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient } from 'mongodb';
 
 const { DATABASE_URL, MONGODB_DB } = process.env;
 
@@ -53,72 +53,11 @@ export async function insert(collection: string, data: any): Promise<string> {
   return insertReturn.insertedId;
 }
 
-export async function removeById(
-  collection: string,
-  id: ObjectId,
-  authorId: ObjectId,
-): Promise<boolean> {
-  if (!cached.conn) {
-    await connectToDB();
-  }
-  const insertReturn = await cached.conn.db
-    .collection(collection)
-    .deleteOne({ _id: id, author: authorId });
-  if (insertReturn.deletedCount > 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-export async function updateById(
-  collection: string,
-  id: ObjectId,
-  authorId: ObjectId,
-  newData: any,
-): Promise<boolean> {
-  if (!cached.conn) {
-    await connectToDB();
-  }
-  const updateReturn = await cached.conn.db.collection(collection).updateOne(
-    { _id: id, author: authorId },
-    {
-      $set: newData,
-    },
-  );
-  if (updateReturn.modifiedCount > 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-export async function updatePushById(
-  collection: string,
-  id: ObjectId,
-  authorId: ObjectId,
-  newData: any,
-): Promise<boolean> {
-  if (!cached.conn) {
-    await connectToDB();
-  }
-  const updateReturn = await cached.conn.db.collection(collection).updateOne(
-    { _id: id, author: authorId },
-    {
-      $push: newData,
-    },
-  );
-  if (updateReturn.modifiedCount > 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 export async function find(
   collection: string,
   filter = {} as any,
   projection = [] as any,
+  sort = {} as any,
 ): Promise<any[]> {
   if (!cached.conn) {
     await connectToDB();
@@ -129,6 +68,44 @@ export async function find(
     .collection(collection)
     .find(filter)
     .project(projectionObj)
+    .sort(sort)
     .toArray();
   return findReturn.map(({ _id, ...item }) => ({ id: _id, ...item }));
+}
+
+export async function update(
+  collection: string,
+  filter = {} as Object,
+  newData: any,
+): Promise<boolean> {
+  if (!cached.conn) {
+    await connectToDB();
+  }
+  const updateReturn = await cached.conn.db
+    .collection(collection)
+    .updateOne(filter, {
+      $set: newData,
+    });
+  if (updateReturn.modifiedCount > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export async function remove(
+  collection: string,
+  filter = {} as Object,
+): Promise<boolean> {
+  if (!cached.conn) {
+    await connectToDB();
+  }
+  const insertReturn = await cached.conn.db
+    .collection(collection)
+    .deleteOne(filter);
+  if (insertReturn.deletedCount > 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
