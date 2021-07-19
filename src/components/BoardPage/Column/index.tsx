@@ -11,6 +11,7 @@ interface ColumnProps {
   createCard: (value: string, id: string) => void;
   children: ReactNode;
   isDropDisabled: boolean;
+  changeListTitle: (listId: string, title: string) => void;
 }
 
 export default function Column({
@@ -20,10 +21,13 @@ export default function Column({
   createCard,
   children,
   isDropDisabled,
+  changeListTitle,
 }: ColumnProps) {
   const [text, setText] = useState('');
+  const [editedTitle, setEditedTitle] = useState(() => title);
   const [shouldClearText, setShouldClearText] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   function createCardHandler() {
     createCard(text, id);
@@ -31,11 +35,33 @@ export default function Column({
     setShouldClearText(true);
   }
 
-  function onPassHandler(e) {
-    if (e.charCode === 13) {
-      createCardHandler();
+  function onChangeHandler(value: string) {
+    console.log('onchange', value);
+    if (isEditingTitle) {
+      setEditedTitle(value);
     }
   }
+  function onKeyDownHandler(e) {
+    if (e.charCode === 13) {
+      updateTitleHandler();
+    }
+  }
+  function updateTitleHandler() {
+    if (editedTitle) {
+      if (editedTitle !== title) {
+        const confirm = window.confirm(
+          'Are you sure you want to change the title?',
+        );
+        if (confirm) {
+          setIsEditingTitle(false);
+          changeListTitle(id, editedTitle);
+        }
+      } else {
+        setIsEditingTitle(false);
+      }
+    }
+  }
+
   return (
     <Draggable draggableId={id} index={index} isDragDisabled={isDropDisabled}>
       {(provided) => (
@@ -44,9 +70,25 @@ export default function Column({
           ref={provided.innerRef}
           {...provided.draggableProps}
           id={id}>
-          <div className={styles.title} id={id} {...provided.dragHandleProps}>
-            {title}
-          </div>
+          {!isEditingTitle ? (
+            <div
+              className={styles.title}
+              id={id}
+              {...provided.dragHandleProps}
+              onClick={() => setIsEditingTitle(true)}>
+              {title}
+            </div>
+          ) : (
+            <AutoResizableTextarea
+              className={styles.inputTitle}
+              textValue={editedTitle}
+              shouldFocus={true}
+              placeholder="List title"
+              onKeyPress={onKeyDownHandler}
+              onBlur={updateTitleHandler}
+              onChange={onChangeHandler}
+            />
+          )}
           <Droppable
             type="CARD"
             key={id}
@@ -89,7 +131,6 @@ export default function Column({
                     onChange={setText}
                     placeholder="Enter a title for this card..."
                     className={styles.AutoTextarea}
-                    onKeyPress={onPassHandler}
                     shouldClearText={shouldClearText}
                     setShouldClearText={setShouldClearText}
                   />

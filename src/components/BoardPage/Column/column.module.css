@@ -23,6 +23,12 @@
 .column > div {
   margin: 8px;
 }
+.inputTitle {
+  width: 100%;
+  padding: 8px;
+  resize: none;
+  overflow: hidden;
+}
 .title {
   flex: 0 0 auto;
   padding: 10px 8px;
