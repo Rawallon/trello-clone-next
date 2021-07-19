@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { getSession, useSession } from 'next-auth/client';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import {
   DragDropContext,
@@ -9,14 +9,13 @@ import {
   Droppable,
   resetServerContext,
 } from 'react-beautiful-dnd';
-
 import AddList from '../../components/BoardPage/AddList';
 import Card from '../../components/BoardPage/Card';
 import Column from '../../components/BoardPage/Column';
 import ColumnHeader from '../../components/BoardPage/ColumnHeader';
 import ModalPortal from '../../components/BoardPage/ModalPortal';
 import { Board, useBoard } from '../../context/BoardContext';
-import { Card as ICard, useCards } from '../../context/CardsContext';
+import { useCards } from '../../context/CardsContext';
 import { useList } from '../../context/ListsContext';
 import { useModal } from '../../context/ModalContext';
 import styles from '../../styles/Board.module.css';
@@ -47,7 +46,14 @@ export default function BoardSlug({
     isPublic: isPublicContext,
     deleteBoard,
   } = useBoard();
-  const { createList, putLists, currentList, moveList, getList } = useList();
+  const {
+    createList,
+    putLists,
+    currentList,
+    moveList,
+    getList,
+    changeListTitle,
+  } = useList();
   const {
     createInitialCard,
     putCards,
@@ -66,12 +72,16 @@ export default function BoardSlug({
     }
   }, [cards, lists]);
 
-  function updateCardHandler(cardData: ICard) {
-    updateCardData(bId, cardData);
+  function updateCardHandler(
+    cardId: string,
+    title: string,
+    description: string,
+  ) {
+    updateCardData(bId, cardId, title, description);
   }
   function createCard(name: string, list: string) {
     if (!String(name) || !String(list)) return;
-    createInitialCard(bId, { name, list });
+    createInitialCard(bId, name, list);
   }
   function dragEndHandle(e: any) {
     if (!e.destination) return;
@@ -99,6 +109,9 @@ export default function BoardSlug({
   function permissionListHandler(userIds: string) {
     const trimUser = userIds.split(',').map((userId) => userId.trim());
     changeBoard(bId, 'permissionList', trimUser);
+  }
+  function changeListTitleHandler(listId: string, listTitle: string) {
+    changeListTitle(bId, listId, listTitle);
   }
 
   async function deleteBoardHandler() {
@@ -156,6 +169,7 @@ export default function BoardSlug({
             {...provided.droppableProps}>
             {currentList.map((column, index) => (
               <Column
+                changeListTitle={changeListTitleHandler}
                 createCard={createCard}
                 title={column.title}
                 id={column.id}
