@@ -12,11 +12,19 @@ interface CardsContextProps {
   currentCards: Card[];
   putCards: (fetchedCards: Card[]) => void;
   createCard: (
+    boardId: string,
+    name: string,
+    listId: string,
+    socket?: any,
+    local?: boolean,
+    cardId?: string,
+  ) => void;
   moveCard: (
     boardId: string,
     cardId: string,
     toId: string,
     insertIndex: number,
+    local?: boolean,
   ) => void;
   getCard: (cId: String) => Card;
   updateCardData: (
@@ -24,6 +32,7 @@ interface CardsContextProps {
     cardId: string,
     name: string,
     description: string,
+    local?: boolean,
   ) => void;
 }
 
@@ -40,17 +49,34 @@ export function CardsContextProvider({ children }) {
     boardId: string,
     name: string,
     listId: string,
+    socket?: any,
+    local = false as boolean,
+    cardId = null as string,
   ) {
-    const position = currentCards.map((card) => card.list === listId).length;
-    const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'POST', {
-      name,
-      listId,
-      position: position + 1,
-    });
-    if (retApi.success) {
+    if (!local) {
+      const position = currentCards.map((card) => card.list === listId).length;
+      const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'POST', {
+        name,
+        listId,
+        position: position + 1,
+      });
+      if (retApi.success) {
+        setCurrentCards((oldcards) => [
+          ...oldcards,
+          { id: retApi.id, name, list: listId },
+        ]);
+
+        if (socket) {
+          socket.emit('createCard', {
+            id: boardId,
+            data: { id: retApi.id, name, list: listId },
+          });
+        }
+      }
+    } else {
       setCurrentCards((oldcards) => [
         ...oldcards,
-        { id: retApi.id, name, list: listId },
+        { id: cardId, name, list: listId },
       ]);
     }
   }
@@ -60,21 +86,36 @@ export function CardsContextProvider({ children }) {
     cardId: string,
     toId: string,
     insertIndex: number,
+    local = false as boolean,
   ) {
-    const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'PATCH', {
-      cardId,
-      toId,
-      insertIndex,
-      boardId,
-    });
-    if (retApi.success) {
-      const cIndex = currentCards.findIndex((c) => c.id === cardId);
-      const newCards = [...currentCards];
-      const cCard = newCards.splice(cIndex, 1)[0];
-      cCard.list = toId;
-      newCards.splice(insertIndex, 0, cCard);
-      setCurrentCards(newCards);
+    console.log(currentCards);
+
+    if (!local) {
+      const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'PATCH', {
+        cardId,
+        toId,
+        insertIndex,
+        boardId,
+      });
+      if (retApi.success) {
+        moveUpdateCurrentCards(cardId, toId, insertIndex);
+      }
+    } else {
+      moveUpdateCurrentCards(cardId, toId, insertIndex);
     }
+  }
+
+  function moveUpdateCurrentCards(
+    cardId: string,
+    toId: string,
+    insertIndex: number,
+  ) {
+    const cIndex = currentCards.findIndex((c) => c.id === cardId);
+    const newCards = [...currentCards];
+    const cCard = newCards.splice(cIndex, 1)[0];
+    cCard.list = toId;
+    newCards.splice(insertIndex, 0, cCard);
+    setCurrentCards(newCards);
   }
 
   function getCard(cId: String) {
@@ -86,14 +127,23 @@ export function CardsContextProvider({ children }) {
     cardId: string,
     name: string,
     description: string,
+    local = false as boolean,
   ) {
-    const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'PUT', {
-      boardId,
-      cardId,
-      name,
-      description,
-    });
-    if (retApi.success) {
+    if (!local) {
+      const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'PUT', {
+        boardId,
+        cardId,
+        name,
+        description,
+      });
+      if (retApi.success) {
+        setCurrentCards((oldCards) =>
+          oldCards.map((card) =>
+            card.id === cardId ? { ...card, name, description } : card,
+          ),
+        );
+      }
+    } else {
       setCurrentCards((oldCards) =>
         oldCards.map((card) =>
           card.id === cardId ? { ...card, name, description } : card,
