@@ -54,11 +54,11 @@ export default function BoardSlug({
     currentList,
     moveList,
     getList,
-    changeListTitle,
+    updateListTitle,
     archiveList,
   } = useList();
   const {
-    createInitialCard,
+    createCard,
     putCards,
     currentCards,
     moveCard,
@@ -136,44 +136,94 @@ export default function BoardSlug({
     description: string,
   ) {
     updateCardData(bId, cardId, title, description);
+    socket.emit('updateCardData', {
+      id: bId,
+      data: {
+        cardId,
+        title,
+        description,
+      },
+    });
   }
-  function createCard(name: string, list: string) {
+  function createCardHandler(name: string, list: string) {
     if (!String(name) || !String(list)) return;
-    createInitialCard(bId, name, list);
+    createCard(bId, name, list, socket);
   }
-  function dragEndHandle(e: any) {
-    if (!e.destination) return;
+  function dragEndHandle(event: any) {
+    // If theres no destination or the destination is the same as the source returns
     if (
-      e.source.droppableId === e.destination.droppableId &&
-      e.source.index === e.destination.index
+      !event.destination ||
+      (event.source.droppableId === event.destination.droppableId &&
+        event.source.index === event.destination.index)
     ) {
       return;
     }
-    if (e.type === 'CARD') {
+
+    if (event.type === 'CARD') {
       moveCard(
         bId,
-        e.draggableId,
-        e.destination.droppableId,
-        e.destination.index,
+        event.draggableId,
+        event.destination.droppableId,
+        event.destination.index,
       );
+      socket.emit('moveCard', {
+        id: bId,
+        data: {
+          cardId: event.draggableId,
+          toId: event.destination.droppableId,
+          insertIndex: event.destination.index,
+        },
+      });
     }
-    if (e.type === 'COLUMN') {
-      moveList(bId, e.draggableId, e.destination.index);
+    if (event.type === 'COLUMN') {
+      moveList(bId, event.draggableId, event.destination.index);
+      socket.emit('moveList', {
+        id: bId,
+        data: {
+          listId: event.draggableId,
+          insertIndex: event.destination.index,
+        },
+      });
     }
   }
+
   function createListHandle(listData: string) {
-    createList(bId, listData);
+    createList(bId, listData, false, socket);
   }
   function permissionListHandler(userIds: string) {
     const trimUser = userIds.split(',').map((userId) => userId.trim());
     changeBoard(bId, 'permissionList', trimUser);
   }
-  function changeListTitleHandler(listId: string, listTitle: string) {
-    changeListTitle(bId, listId, listTitle);
+  function updateListTitleHandler(listId: string, listTitle: string) {
+    updateListTitle(bId, listId, listTitle);
+    socket.emit('updateListTitle', {
+      id: bId,
+      data: {
+        listId,
+        listTitle,
+      },
+    });
   }
   function archiveListHandler(listId: string, value: boolean) {
     archiveList(bId, listId, value);
+    socket.emit('archiveList', {
+      id: bId,
+      data: {
+        listId,
+        value,
+      },
+    });
   }
+  // function archiveCardHandler(listId: string, value: boolean) {
+  //   archiveCard(bId, listId, value);
+  //   socket.emit('archiveCard', {
+  //     id: bId,
+  //     data: {
+  //       listId,
+  //       value,
+  //     },
+  //   });
+  // }
 
   async function deleteBoardHandler() {
     const confirm = window.confirm(
@@ -182,6 +232,9 @@ export default function BoardSlug({
     if (confirm) {
       await deleteBoard(bId);
       router.push('/boards');
+      socket.emit('deletedBoard', {
+        id: bId,
+      });
     }
   }
 
@@ -230,9 +283,9 @@ export default function BoardSlug({
             {...provided.droppableProps}>
             {currentList.map((column, index) => (
               <Column
-                changeListTitle={changeListTitleHandler}
+                updateListTitle={updateListTitleHandler}
                 archiveListHandler={archiveListHandler}
-                createCard={createCard}
+                createCard={createCardHandler}
                 title={column.title}
                 id={column.id}
                 key={column.id}
