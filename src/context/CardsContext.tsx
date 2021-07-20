@@ -11,7 +11,7 @@ export interface Card {
 interface CardsContextProps {
   currentCards: Card[];
   putCards: (fetchedCards: Card[]) => void;
-  createInitialCard: (boardId: string, name: string, listId: string) => void;
+  createCard: (
   moveCard: (
     boardId: string,
     cardId: string,
@@ -36,7 +36,7 @@ export function CardsContextProvider({ children }) {
     setCurrentCards(fetchedCards);
   }
 
-  async function createInitialCard(
+  async function createCard(
     boardId: string,
     name: string,
     listId: string,
@@ -107,7 +107,7 @@ export function CardsContextProvider({ children }) {
         currentCards,
         putCards,
         updateCardData,
-        createInitialCard,
+        createCard,
         getCard,
         moveCard,
       }}>
