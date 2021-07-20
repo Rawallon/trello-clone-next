@@ -12,8 +12,18 @@ interface ListContextProps {
   createList: (boardId: string, title: string) => void;
   moveList: (boardId: string, listId: string, insertIndex: number) => void;
   getList: (lID: string) => List;
-  changeListTitle: (boardId: string, listId: string, value: string) => void;
-  archiveList: (boardId: string, listId: string, value: boolean) => void;
+  updateListTitle: (
+    boardId: string,
+    listId: string,
+    value: string,
+    local?: boolean,
+  ) => void;
+  archiveList: (
+    boardId: string,
+    listId: string,
+    value: boolean,
+    local?: boolean,
+  ) => void;
 }
 
 export const ListContext = createContext({} as ListContextProps);
@@ -36,7 +46,7 @@ export function ListContextProvider({ children }) {
     }
   }
 
-  async function changeListTitle(
+  async function updateListTitle(
     boardId: string,
     listId: string,
     value: string,
@@ -97,7 +107,7 @@ export function ListContextProvider({ children }) {
         createList,
         moveList,
         getList,
-        changeListTitle,
+        updateListTitle,
         archiveList,
       }}>
       {children}
