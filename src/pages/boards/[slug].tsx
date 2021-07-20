@@ -9,6 +9,7 @@ import {
   Droppable,
   resetServerContext,
 } from 'react-beautiful-dnd';
+import { io } from 'socket.io-client';
 import AddList from '../../components/BoardPage/AddList';
 import Card from '../../components/BoardPage/Card';
 import Column from '../../components/BoardPage/Column';
@@ -22,6 +23,7 @@ import styles from '../../styles/Board.module.css';
 import ApiCall from '../../utils/API';
 import { sessionReturn } from '../../utils/interfaces';
 
+let socket;
 export default function BoardSlug({
   bId,
   bTitle,
@@ -72,6 +74,61 @@ export default function BoardSlug({
       putLists(lists);
     }
   }, [cards, lists]);
+
+  useEffect(() => {
+    if (
+      socket === undefined &&
+      typeof window !== 'undefined' &&
+      currentList.length > 0
+    ) {
+      fetch('/api/socketio').finally(() => {
+        socket = io();
+        socket.on('connect', () => {
+          socket.emit('joinRoom', bId);
+          console.log('[WS] Connect => A connection with has been established');
+        });
+        socket.on('disconnect', () =>
+          console.log('[WS] Disconnect => A connection has been terminated'),
+        );
+
+        socket.on('moveList', (data) => {
+          moveList(bId, String(data.listId), Number(data.insertIndex), true);
+        });
+        socket.on('createList', (data) => {
+          createList(bId, data.title, true, undefined, data.id);
+        });
+        socket.on('archiveList', (data) => {
+          archiveList(bId, String(data.listId), Boolean(data.value), true);
+        });
+        socket.on('updateListTitle', (data) => {
+          updateListTitle(
+            bId,
+            String(data.listId),
+            String(data.listTitle),
+            true,
+          );
+        });
+        socket.on('createCard', (data) => {
+          createCard(bId, data.name, data.list, undefined, true, data.id);
+        });
+        socket.on('updateCardData', (data) => {
+          updateCardData(bId, data.cardId, data.title, data.description, true);
+        });
+        // socket.on('archiveCard', (data) => {
+        //   archiveCard(bId, String(data.cardId), Boolean(data.value), true);
+        // });
+        socket.on('moveCard', (data) => {
+          moveCard(
+            bId,
+            String(data.cardId),
+            String(data.toId),
+            Number(data.insertIndex),
+            true,
+          );
+        });
+      });
+    }
+  }, [currentList]);
 
   function updateCardHandler(
     cardId: string,
