@@ -8,7 +8,7 @@ const TestComponent = () => {
     currentCards,
     putCards,
     updateCardData,
-    createInitialCard,
+    createCard,
     getCard,
     moveCard,
   } = useCards();
@@ -37,9 +37,9 @@ const TestComponent = () => {
           ])
         }></button>
       <button
-        data-testid="createInitialCard"
+        data-testid="createCard"
         onClick={() =>
-          createInitialCard(1, { name: 'Not a test card', list: '1' }, 1)
+          createCard(1, { name: 'Not a test card', list: '1' }, 1)
         }></button>
       <button
         data-testid="moveCard"
@@ -94,7 +94,7 @@ it('should contain updated card after runing updateCardData function', async () 
 
 it('should create a new card after runing updateCardData function', async () => {
   expect(screen.getByTestId('value')).toHaveTextContent('');
-  fireEvent.click(screen.getByTestId('createInitialCard'));
+  fireEvent.click(screen.getByTestId('createCard'));
   expect(await screen.findByText('Not a test card')).toBeInTheDocument();
 });
 

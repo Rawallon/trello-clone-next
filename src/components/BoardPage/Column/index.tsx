@@ -11,7 +11,7 @@ interface ColumnProps {
   createCard: (value: string, id: string) => void;
   children: ReactNode;
   isDropDisabled: boolean;
-  changeListTitle: (listId: string, title: string) => void;
+  updateListTitle: (listId: string, title: string) => void;
   archiveListHandler: (listId: string, value: boolean) => void;
 }
 
@@ -22,7 +22,7 @@ export default function Column({
   createCard,
   children,
   isDropDisabled,
-  changeListTitle,
+  updateListTitle,
   archiveListHandler,
 }: ColumnProps) {
   const [text, setText] = useState('');
@@ -55,7 +55,7 @@ export default function Column({
         );
         if (confirm) {
           setIsEditingTitle(false);
-          changeListTitle(id, editedTitle);
+          updateListTitle(id, editedTitle);
         }
       } else {
         setIsEditingTitle(false);
