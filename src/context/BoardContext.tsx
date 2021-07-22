@@ -28,6 +28,7 @@ interface BoardContextData {
     boardId: string,
     field: string,
     value: string | boolean | string[],
+    local?: boolean,
   ) => void;
   deleteBoard: (boardId: string) => void;
 }
@@ -85,15 +86,21 @@ export function BoardContextProvider({ children }) {
     boardId: string,
     field: string,
     value: string | boolean | string[],
+    local = false as boolean,
   ) {
-    const retApi = await ApiCall(`/api/boards/${boardId}`, 'PATCH', {
-      field: field,
-      value: value,
-    });
-    if (retApi.success) {
+    if (!local) {
+      const retApi = await ApiCall(`/api/boards/${boardId}`, 'PATCH', {
+        field: field,
+        value: value,
+      });
+      if (retApi.success) {
+        if (field === 'title') setTitle(String(value));
+        else if (field === 'background') setBgColor(String(value));
+        else if (field === 'isPublic') setIsPublic(Boolean(value));
+      }
+    } else {
       if (field === 'title') setTitle(String(value));
-      if (field === 'background') setBgColor(String(value));
-      if (field === 'isPublic') setIsPublic(Boolean(value));
+      else if (field === 'background') setBgColor(String(value));
     }
   }
 
