@@ -258,6 +258,7 @@ export default function BoardSlug({
     router.push('/');
     return null;
   }
+
   return (
     <DragDropContext onDragEnd={dragEndHandle}>
       <Head>
@@ -272,22 +273,22 @@ export default function BoardSlug({
         getCard={getCard}
         updateCardData={updateCardHandler}
       />
-      <ColumnHeader
-        changeBgHandler={(value) => changeBoard(bId, 'background', value)}
-        changeTitleHandler={(value) => changeBoard(bId, 'title', value)}
-        title={bTitle}
-        bgOptions={bgOptions}
-        isAuthorized={isAuthorized}
-        isPublic={isPublicContext}
-        setIsPublicHandler={(value) =>
-          changeBoard(bId, 'isPublic', Boolean(value))
-        }
-        permissionList={permissionList ? permissionList.join(', ') : ''}
-        permissionListHandler={permissionListHandler}
-        deleteBoardHandler={deleteBoardHandler}
-      />
+      {title && (
+        <ColumnHeader
           changeBgHandler={(value) => changeBoardHandler('background', value)}
           changeTitleHandler={(value) => changeBoardHandler('title', value)}
+          title={title}
+          bgOptions={bgOptions}
+          isAuthorized={isAuthorized}
+          isPublic={isPublicContext}
+          setIsPublicHandler={(value) =>
+            changeBoard(bId, 'isPublic', Boolean(value))
+          }
+          permissionList={permissionList ? permissionList.join(', ') : ''}
+          permissionListHandler={permissionListHandler}
+          deleteBoardHandler={deleteBoardHandler}
+        />
+      )}
       <Droppable
         direction="horizontal"
         type="COLUMN"

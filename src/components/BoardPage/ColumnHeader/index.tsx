@@ -4,6 +4,7 @@ import Link from 'next/link';
 import styles from './columnheader.module.css';
 import AutoResizableInput from '../AutoResizableInput';
 import { CloseIcon, HomeIcon } from '../../Icons';
+import { SyntheticEvent } from 'react';
 
 interface ColumnHeaderProps {
   title: string;
@@ -30,7 +31,7 @@ function ColumnHeader({
   permissionListHandler,
   deleteBoardHandler,
 }: ColumnHeaderProps) {
-  const [titleHolder, setTitleHolder] = useState(title);
+  const [titleHolder, setTitleHolder] = useState(() => title);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [permissionText, setPermissionText] = useState(
@@ -120,6 +121,13 @@ function ColumnHeader({
     );
   };
 
+  function onKeyPressHandler(event: SyntheticEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      saveChangeTitle();
+      setIsEditingTitle(false);
+    }
+  }
+
   return (
     <div className={styles.wrapper}>
       <div>
@@ -148,6 +156,7 @@ function ColumnHeader({
             shouldFocus={isEditingTitle}
             className={styles.titleText}
             textValue={titleHolder}
+            onKeyPress={onKeyPressHandler}
             onChange={setTitleHolder}
             onBlur={saveChangeTitle}
           />
