@@ -20,7 +20,7 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
   const { currentModal, hideModal } = useModal();
   const [mounted, setMounted] = useState(false);
   const [cardData, setCardData] = useState(null);
-  const [editingDesc, setEditingDesc] = useState(false);
+  const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [showHelper, setShowHelper] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
@@ -53,10 +53,27 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
   }
 
   function hideModalHandle() {
-    if (window.confirm('Do you want to save your changes?')) {
-      updateCardData(cardData.id, cardData.name, cardData.description);
+    if (isEditingDesc) {
+      if (window.confirm('Do you want to save changes?')) {
+        handleUpdateCardData();
+        setIsEditingDesc(false);
+      }
     }
+
+    if (cardData.name.length === 0) {
+      alert(`Card name must not be empty`);
+      return;
+    }
+
     hideModal();
+  }
+
+  function handleUpdateCardData() {
+    if (cardData.name.length === 0) {
+      alert(`Card name must not be empty`);
+      return;
+    }
+    updateCardData(cardData.id, cardData.name, cardData.description);
   }
 
   if (!mounted || !cardData) return null;
@@ -81,6 +98,7 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
             textValue={cardData.name}
             placeholder={cardData.name}
             shouldFocus={false}
+            onBlur={handleUpdateCardData}
             onChange={(e) => changeCardDataHandler('name', e)}
           />
           <small>
@@ -92,24 +110,27 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
           <h3>Description</h3>
           <button
             className={`${styles.button} ${styles.edit} ${
-              editingDesc ? styles.hidden : ''
+              isEditingDesc ? styles.hidden : ''
             }`}
-            onClick={() => setEditingDesc(!editingDesc)}>
+            onClick={() => setIsEditingDesc(!isEditingDesc)}>
             Edit
           </button>
 
-          {editingDesc ? (
+          {isEditingDesc ? (
             <>
               <AutoResizableTextarea
                 className={styles.textarea}
                 placeholder=""
-                shouldFocus={editingDesc}
+                shouldFocus={isEditingDesc}
                 textValue={cardData.description}
                 onChange={(e) => changeCardDataHandler('description', e)}
               />
               <button
                 className={`${styles.button} ${styles.save}`}
-                onClick={() => setEditingDesc(!editingDesc)}>
+                onClick={() => {
+                  setIsEditingDesc(!isEditingDesc);
+                  handleUpdateCardData();
+                }}>
                 Save
               </button>
               <button
@@ -120,7 +141,7 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
             </>
           ) : (
             <div
-              onClick={() => setEditingDesc(!editingDesc)}
+              onClick={() => setIsEditingDesc(!isEditingDesc)}
               dangerouslySetInnerHTML={{
                 __html: marked(cardData.description ?? ''),
               }}
