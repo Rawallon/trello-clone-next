@@ -91,6 +91,10 @@ export default function BoardSlug({
           console.log('[WS] Disconnect => A connection has been terminated'),
         );
 
+        socket.on('changeBoard', (data) => {
+          changeBoard(bId, data.type, data.value, true);
+        });
+
         socket.on('moveList', (data) => {
           moveList(bId, String(data.listId), Number(data.insertIndex), true);
         });
@@ -238,6 +242,17 @@ export default function BoardSlug({
     }
   }
 
+  function changeBoardHandler(type: string, value: string) {
+    changeBoard(bId, type, value);
+    socket.emit('changeBoard', {
+      id: bId,
+      data: {
+        type,
+        value,
+      },
+    });
+  }
+
   if (typeof window !== 'undefined' && loading) return null;
   if (typeof window !== 'undefined' && !isPublic && !isAuthorized) {
     router.push('/');
@@ -271,6 +286,8 @@ export default function BoardSlug({
         permissionListHandler={permissionListHandler}
         deleteBoardHandler={deleteBoardHandler}
       />
+          changeBgHandler={(value) => changeBoardHandler('background', value)}
+          changeTitleHandler={(value) => changeBoardHandler('title', value)}
       <Droppable
         direction="horizontal"
         type="COLUMN"

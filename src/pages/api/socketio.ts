@@ -16,6 +16,7 @@ const ioHandler = (req, res) => {
         socket.join(roomId);
       });
       const actions = [
+        'changeBoard',
         'moveList',
         'updateListTitle',
         'archiveList',

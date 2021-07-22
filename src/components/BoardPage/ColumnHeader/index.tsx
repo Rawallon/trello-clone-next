@@ -134,34 +134,32 @@ function ColumnHeader({
           </div>
         </Link>
       </div>
-      {isAuthorized ? (
-        <>
-          <div className={styles.flexGrow}>
-            {!isEditingTitle ? (
-              <div
-                className={styles.titleBtn}
-                onClick={() => setIsEditingTitle(!isEditingTitle)}>
-                {titleHolder}
-              </div>
-            ) : (
-              <AutoResizableInput
-                shouldFocus={isEditingTitle}
-                className={styles.titleText}
-                textValue={titleHolder}
-                onChange={setTitleHolder}
-                onBlur={saveChangeTitle}
-              />
-            )}
+      <div className={styles.flexGrow}>
+        {!isEditingTitle ? (
+          <div
+            className={styles.titleBtn}
+            onClick={() =>
+              isAuthorized ? setIsEditingTitle(!isEditingTitle) : null
+            }>
+            {title}
           </div>
+        ) : (
+          <AutoResizableInput
+            shouldFocus={isEditingTitle}
+            className={styles.titleText}
+            textValue={titleHolder}
+            onChange={setTitleHolder}
+            onBlur={saveChangeTitle}
+          />
+        )}
+      </div>
+      {isAuthorized && (
+        <>
           <div>
             <button onClick={() => setIsMenuOpen(!isMenuOpen)}>Menu</button>
           </div>
           {colorMenu()}
         </>
-      ) : (
-        <div className={styles.flexGrow}>
-          <div className={styles.titleBtn}>{titleHolder}</div>
-        </div>
       )}
     </div>
   );
