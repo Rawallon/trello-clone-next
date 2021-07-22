@@ -13,9 +13,15 @@ interface ModalPortal {
   getList: (value: string) => List;
   getCard: (value: string) => Card;
   updateCardData: (cardId: string, title: string, description: string) => void;
+  isAuthorized: boolean;
 }
 
-function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
+function ModalPortal({
+  getCard,
+  getList,
+  updateCardData,
+  isAuthorized,
+}: ModalPortal) {
   const ref = useRef();
   const { currentModal, hideModal } = useModal();
   const [mounted, setMounted] = useState(false);
@@ -53,6 +59,8 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
   }
 
   function hideModalHandle() {
+    if (!isAuthorized) hideModal();
+
     if (isEditingDesc) {
       if (window.confirm('Do you want to save changes?')) {
         handleUpdateCardData();
@@ -95,12 +103,15 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
         </button>
         <div>
           <AutoResizableTextarea
+            className={isAuthorized ? null : styles.textTitle}
+            disabled={!isAuthorized}
             textValue={cardData.name}
             placeholder={cardData.name}
             shouldFocus={false}
             onBlur={handleUpdateCardData}
             onChange={(e) => changeCardDataHandler('name', e)}
           />
+
           <small>
             in list <span>{getList(cardData.list).title}</span>
           </small>
@@ -108,13 +119,15 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
 
         <div className={styles.description}>
           <h3>Description</h3>
-          <button
-            className={`${styles.button} ${styles.edit} ${
-              isEditingDesc ? styles.hidden : ''
-            }`}
-            onClick={() => setIsEditingDesc(!isEditingDesc)}>
-            Edit
-          </button>
+          {isAuthorized && (
+            <button
+              className={`${styles.button} ${styles.edit} ${
+                isEditingDesc ? styles.hidden : ''
+              }`}
+              onClick={() => setIsEditingDesc(!isEditingDesc)}>
+              Edit
+            </button>
+          )}
 
           {isEditingDesc ? (
             <>
@@ -141,7 +154,9 @@ function ModalPortal({ getCard, getList, updateCardData }: ModalPortal) {
             </>
           ) : (
             <div
-              onClick={() => setIsEditingDesc(!isEditingDesc)}
+              onClick={() =>
+                isAuthorized ? setIsEditingDesc(!isEditingDesc) : null
+              }
               dangerouslySetInnerHTML={{
                 __html: marked(cardData.description ?? ''),
               }}

@@ -272,6 +272,7 @@ export default function BoardSlug({
         getList={getList}
         getCard={getCard}
         updateCardData={updateCardHandler}
+        isAuthorized={isAuthorized}
       />
       {title && (
         <ColumnHeader

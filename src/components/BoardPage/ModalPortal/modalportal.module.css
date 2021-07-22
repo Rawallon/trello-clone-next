@@ -83,6 +83,12 @@
   transition: 250ms;
 }
 
+.modalBody .textTitle:hover,
+.modalBody .textTitle:focus {
+  background: transparent;
+  cursor: not-allowed;
+  box-shadow: none;
+}
 .modalBody textarea:hover {
   background: rgba(255, 255, 255, 0.4);
 }

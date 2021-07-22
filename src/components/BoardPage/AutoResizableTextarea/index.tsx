@@ -10,6 +10,7 @@ interface AutoResizableTextareaProps {
   onKeyPress?: (value: SyntheticEvent) => void;
   shouldClearText?: boolean;
   setShouldClearText?: (value: boolean) => void;
+  disabled?: boolean;
 }
 
 export default function AutoResizableTextarea({
@@ -22,6 +23,7 @@ export default function AutoResizableTextarea({
   onKeyPress,
   shouldClearText = false,
   setShouldClearText,
+  disabled = false,
 }: AutoResizableTextareaProps) {
   const textAreaRef = useRef(null);
   const [textAreaHeight, setTextAreaHeight] = useState('auto');
@@ -66,6 +68,7 @@ export default function AutoResizableTextarea({
         minHeight: parentHeight,
       }}>
       <textarea
+        disabled={disabled}
         defaultValue={textValue}
         placeholder={placeholder}
         className={className}
