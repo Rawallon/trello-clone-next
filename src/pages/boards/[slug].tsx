@@ -308,6 +308,7 @@ export default function BoardSlug({
                 id={column.id}
                 key={column.id}
                 index={index}
+                isAuthorized={isAuthorized}
                 isDropDisabled={!isAuthorized}>
                 {currentCards
                   .filter((item) => item.list === String(column.id))

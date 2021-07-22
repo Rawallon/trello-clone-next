@@ -11,6 +11,7 @@ interface ColumnProps {
   createCard: (value: string, id: string) => void;
   children: ReactNode;
   isDropDisabled: boolean;
+  isAuthorized: boolean;
   updateListTitle: (listId: string, title: string) => void;
   archiveListHandler: (listId: string, value: boolean) => void;
 }
@@ -22,6 +23,7 @@ export default function Column({
   createCard,
   children,
   isDropDisabled,
+  isAuthorized,
   updateListTitle,
   archiveListHandler,
 }: ColumnProps) {
@@ -87,11 +89,13 @@ export default function Column({
               className={styles.title}
               id={id}
               {...provided.dragHandleProps}
-              onClick={() => setIsEditingTitle(true)}>
+              onClick={() => (isAuthorized ? setIsEditingTitle(true) : null)}>
               {title}
-              <div id="col-opts" onClick={deleteButtonHandler}>
-                <TrashIcon />
-              </div>
+              {isAuthorized && (
+                <div id="col-opts" onClick={deleteButtonHandler}>
+                  <TrashIcon />
+                </div>
+              )}
             </div>
           ) : (
             <AutoResizableTextarea
