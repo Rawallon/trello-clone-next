@@ -23,7 +23,7 @@ function ModalPortal({
   isAuthorized,
 }: ModalPortal) {
   const ref = useRef();
-  const { currentModal, hideModal } = useModal();
+  const { currentModal, hideModal, isUpdated } = useModal();
   const [mounted, setMounted] = useState(false);
   const [cardData, setCardData] = useState(null);
   const [isEditingDesc, setIsEditingDesc] = useState(false);
@@ -43,7 +43,7 @@ function ModalPortal({
       window.removeEventListener('keydown', onKeyDown);
       setCardData(null);
     }
-  }, [currentModal, mounted]);
+  }, [currentModal, mounted, isUpdated]);
 
   const onKeyDown = useCallback((event) => {
     if (event.key === 'Escape') {
@@ -102,15 +102,17 @@ function ModalPortal({
           <CloseIcon />
         </button>
         <div>
-          <AutoResizableTextarea
-            className={isAuthorized ? null : styles.textTitle}
-            disabled={!isAuthorized}
-            textValue={cardData.name}
-            placeholder={cardData.name}
-            shouldFocus={false}
-            onBlur={handleUpdateCardData}
-            onChange={(e) => changeCardDataHandler('name', e)}
-          />
+          {isAuthorized ? (
+            <AutoResizableTextarea
+              textValue={cardData.name}
+              placeholder={cardData.name}
+              shouldFocus={false}
+              onBlur={handleUpdateCardData}
+              onChange={(e) => changeCardDataHandler('name', e)}
+            />
+          ) : (
+            <div className={styles.textTitle}>{cardData.name}</div>
+          )}
 
           <small>
             in list <span>{getList(cardData.list).title}</span>

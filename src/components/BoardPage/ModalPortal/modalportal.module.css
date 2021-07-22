@@ -83,11 +83,18 @@
   transition: 250ms;
 }
 
-.modalBody .textTitle:hover,
-.modalBody .textTitle:focus {
+.modalBody .textTitle {
   background: transparent;
-  cursor: not-allowed;
-  box-shadow: none;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  min-height: 20px;
+  font-size: 1.25rem;
+  line-height: 24px;
+  font-weight: 600;
+  padding: 4px;
+  width: 97%;
+  overflow: hidden;
 }
 .modalBody textarea:hover {
   background: rgba(255, 255, 255, 0.4);

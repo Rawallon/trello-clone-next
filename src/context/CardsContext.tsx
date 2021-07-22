@@ -88,8 +88,6 @@ export function CardsContextProvider({ children }) {
     insertIndex: number,
     local = false as boolean,
   ) {
-    console.log(currentCards);
-
     if (!local) {
       const retApi = await ApiCall(`/api/boards/${boardId}/cards`, 'PATCH', {
         cardId,

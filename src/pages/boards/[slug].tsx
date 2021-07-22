@@ -65,7 +65,7 @@ export default function BoardSlug({
     getCard,
     updateCardData,
   } = useCards();
-  const { showModal } = useModal();
+  const { currentModal, showModal, forceModalRefresh } = useModal();
 
   useEffect(() => {
     if (bTitle !== '' && bTitle !== undefined) {
@@ -117,6 +117,9 @@ export default function BoardSlug({
         });
         socket.on('updateCardData', (data) => {
           updateCardData(bId, data.cardId, data.title, data.description, true);
+          console.log('updateCardData');
+
+          forceModalRefresh();
         });
         // socket.on('archiveCard', (data) => {
         //   archiveCard(bId, String(data.cardId), Boolean(data.value), true);
