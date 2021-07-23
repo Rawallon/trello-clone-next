@@ -5,3 +5,6 @@ export const queryParser = (data: any): any => {
     ...data,
   };
 };
+export const queryMapParser = (data: any): any => {
+  return data.map((element) => queryParser(element));
+};

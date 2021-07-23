@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { queryParser } from './mongoHelper';
+import { queryMapParser, queryParser } from './mongoHelper';
 
 const { DATABASE_URL, MONGODB_DB } = process.env;
 
@@ -52,6 +52,19 @@ export async function insert(collection: string, data: any): Promise<string> {
     .collection(collection)
     .insertOne(queryParser(data));
   return insertReturn.insertedId;
+}
+
+export async function insertMany(
+  collection: string,
+  data: any,
+): Promise<string> {
+  if (!cached.conn) {
+    await connectToDB();
+  }
+  const insertReturn = await cached.conn.db
+    .collection(collection)
+    .insertMany(queryMapParser(data));
+  return insertReturn.insertedIds;
 }
 
 export async function find(
