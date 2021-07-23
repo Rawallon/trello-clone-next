@@ -17,7 +17,7 @@
   cursor: pointer;
   border-radius: 3px;
 
-  width: 23.5%;
+  min-width: 23.5%;
   margin: 0 2% 2% 0;
   padding: 8px;
 

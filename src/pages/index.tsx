@@ -9,7 +9,6 @@ function Home() {
     <div className={styles.container}>
       <SignInForm signIn={signIn} />
       <Illustration />
-      <Link href="/boards">ads</Link>
     </div>
   );
 }
