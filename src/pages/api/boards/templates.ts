@@ -19,7 +19,7 @@ export default async function handler(
   const session = (await getSession({ req })) as unknown as sessionReturn;
   switch (requestType) {
     // TODO: Remove this once the templates are implemented
-    case 'GET': {
+    case 'FILLER': {
       const templateOne = {
         title: 'Demo template',
         templateId: 'template-0',
@@ -64,6 +64,11 @@ export default async function handler(
         res.status(404).send({ success: false });
       }
       return;
+    }
+
+    case 'GET': {
+      const templates = await find(TEMPLATES_COLLECTION);
+      return res.status(200).send(templates);
     }
 
     case 'POST': {
