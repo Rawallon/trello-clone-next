@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { TableIcon } from '../../Icons';
 import styles from './ProfileSideBar.module.css';
 
@@ -8,6 +10,12 @@ interface ProfileSideBar {
 }
 
 function ProfileSideBar({ username, picture, signOut }: ProfileSideBar) {
+  const router = useRouter();
+  const routes = [
+    { name: 'Boards', link: '/boards' },
+    { name: 'Templates', link: '/templates' },
+  ];
+
   if (!username) return null;
   return (
     <div className={styles.profileHolder}>
@@ -23,14 +31,17 @@ function ProfileSideBar({ username, picture, signOut }: ProfileSideBar) {
       </div>
       <div className={styles.menuItems}>
         <ul>
-          <li className={styles.active}>
-            <TableIcon />
-            <span>Boards</span>
-          </li>
-          <li>
-            <TableIcon />
-            <span>Templates</span>
-          </li>
+          {routes.map((_, index) => (
+            <Link href={routes[index].link}>
+              <li
+                className={
+                  routes[index].link === router.route ? styles.active : null
+                }>
+                <TableIcon />
+                <span>{routes[index].name}</span>
+              </li>
+            </Link>
+          ))}
         </ul>
       </div>
       <div className={styles.menuBottom}>
