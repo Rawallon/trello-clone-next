@@ -22,6 +22,12 @@ interface BoardContextData {
   bgColor: string;
   isPublic: boolean;
   putMyBoards: (boards: Board[]) => void;
+  createNewBoardFromTemplate: (
+    title: string,
+    bgcolor: string,
+    userId: string,
+    templateId: string,
+  ) => void;
   createNewBoard: (title: string, bgcolor: string, userId: string) => void;
   putBoardData: (title: string, bgcolor: string, isPublic: boolean) => void;
   changeBoard: (
@@ -61,6 +67,7 @@ export function BoardContextProvider({ children }) {
   function putMyBoards(boards: any[]) {
     setMyBoards(boards);
   }
+
   async function createNewBoard(
     title: string,
     bgColor: string,
@@ -70,6 +77,29 @@ export function BoardContextProvider({ children }) {
       title,
       bgColor,
       author: userId,
+    });
+    if (retApi) {
+      const newBoard = {
+        id: retApi.success,
+        title,
+        bgcolor: bgColor,
+        author: userId,
+      };
+      setMyBoards((oldBoards) => [...oldBoards, newBoard]);
+    }
+  }
+
+  async function createNewBoardFromTemplate(
+    title: string,
+    bgColor: string,
+    userId: string,
+    templateId: string,
+  ) {
+    const retApi = await ApiCall(`/api/boards/templates`, 'POST', {
+      title,
+      bgColor,
+      author: userId,
+      templateId,
     });
     if (retApi) {
       const newBoard = {
@@ -121,6 +151,7 @@ export function BoardContextProvider({ children }) {
         bgColor,
         isPublic,
         putMyBoards,
+        createNewBoardFromTemplate,
         createNewBoard,
         putBoardData,
         changeBoard,
