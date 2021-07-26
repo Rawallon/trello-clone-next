@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import styles from './boardlistitem.module.css';
+import styles from './BoardListItem.module.css';
 
 interface BoardListItemProps {
   link: string;
