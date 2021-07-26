@@ -1,82 +1,96 @@
-# Kanban Board Next
+<div align="center">
+  <img src=".github/logo.png" alt="Nello logo" heigth="200px" width="400px">
+</div>
+<br/>
+<h1 align="center">Nello</h1>
+<h5 align="center">Not just a trello clone</h5><br/>
 
-As the title suggests this is a simple kanban board, I'm designing it as a Trello-lite clone. Some functionality that are in the works are: User auth with Next-Auth, multiple boards, possibility for users to collaborate on the same board.
+## 🎯 About
 
-This project is a **Work In Progress** and everything outlined in this readme is a rough sketch that will be used as reference.
+Nello was initially created to be a Trello clone but it just kept expanding to full fledge project.<br/>
+With this project the goal was to expand my knowledge with library I had heard but never got the chance to use it (or use it in depth). Which was the case for both Next API routes and websockets, with both I had some familiarity but never tried to bend this far to see what were they capable.
 
-## Demo video
+PS: If you're looking at this because you're interested in DnD, you might want to check [this other repo](https://github.com/Rawallon/kanban-board-react-context) where I implement it without any external library.<br/><br/>
+Go try it and please let me know if you enjoyed it with a ⭐️, I would appreciate it a lot.
+<br/>
 
+## :sparkles: Functionality
 
+:heavy_check_mark: &nbsp;&nbsp;User auth (Sign In/Sign out)<br />
+:heavy_check_mark: &nbsp;&nbsp;Social login<br />
+:heavy_check_mark: &nbsp;&nbsp;No back-end needs (uses Next API Routes)<br />
+:heavy_check_mark: &nbsp;&nbsp;Real-time updates with websockets<br />
+:heavy_check_mark: &nbsp;&nbsp;Trello-like kanban board<br />
+:heavy_check_mark: &nbsp;&nbsp;Fully implemented board, lists and cards CRUD <br />
+:heavy_check_mark: &nbsp;&nbsp;Server-side rendering<br />
+
+## 📸 Video
+	
 https://user-images.githubusercontent.com/39421317/118188625-0ec57080-b417-11eb-9d90-0f7016b36501.mp4
 
+### Websocket in action
+
+https://user-images.githubusercontent.com/68453900/126524179-63af364f-02bc-4982-b91c-17e4fae7e00d.mp4
 
 
-## User Story
+## ▶️ Demo
 
-### New user
+Here you can find the demo link:
 
-1.  User logs in
-1.  Sees square where board is supposed to be with text "Create Board"
-1.  User clicks and a modal opens asking for new board name
-1.  User clicks on the created board and is taken to /board/:id
-1.  Board is loaded without any list or card
-1.  User starts filling with lists/cards
+<a title="Deployed with Vercel" href="https://nello.vercel.app/">
+<img alt="Deployed with Vercel" src="https://img.shields.io/badge/Deployed%20with%20Vercel-%23ea4335?style=plastic&logo=vercel&logoColor=white" width="200px" />
+</a> 
 
-## Schema
+PS: Websockets are not supported in this demo.
 
-Note: This most likely will change, for an updated view checkout the file [./src/mocks/db.js](./src/mocks/db.js)
+## :rocket: Technologies
 
-```
-User:
-{
-username: String,
-colorpicture: String,
-password: String,
-boards: [{ type: Schema.Types.ObjectId, ref: 'Board' }]
-}
+### Front end
+- [ReactJS](https://reactjs.org/)
+- [Typescript](https://www.typescriptlang.org/)
+- [NextJS](https://nextjs.org/)
+- [Marked](https://marked.js.org/)
+- [Next Auth](https://next-auth.js.org/)
+- [React Beautiful DnD](https://react-beautiful-dnd.netlify.app/)
 
-Board:
-{
-  title: String,
-  bgcolor: String,
-  cards: Array,
-  lists: Array
-  permisionlist: [{ type: Schema.Types.ObjectId, ref: 'User' }]
-}
-```
+### Back end
+- [MongoDB](https://github.com/mongodb/node-mongodb-native)
+- [Socket.io](https://socket.io/)
+- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)
+- [bcrypt](https://github.com/kelektiv/node.bcrypt.js#readme)
+<br/>
 
-If a Board is in a User means he can delete it
-If a User is inside PermissionList means he can edit the cards
-MAYBE: Store cards on it own collection, that would allow for history of changes, labels, etc.
+- [Vercel](https://vercel.com/) for the deploy and CI.
 
-## Endpoints
+### Deploy configuration steps
 
-For all endpoints mocked so far go to the file [./src/mocks/handlers.js](./src/mocks/handlers.js)
+1. Connect your GitHub account
+2. Select the project
+3. In Settings → Environment Variables → Set **Environment variables**.
+<br/>
 
-    /board/id:
-```
-{
-  Title: "My board",
-  BgColor: "EFCB68",
-  Lists: [
-  {
-    id: '1',
-    title: 'Doing',
-  },
-  {
-    id: '2',
-    title: 'Done',
-  },
-  ],
-  Cards: [
-  {
-    id: '1-card',
-    name: 'Test Card',
-    description: '# Test',
-    list: '1',
-  },
-  ...
-  ]
-}
+<br/>
+
+
+## 👨🏻‍💻 Run Locally
+
+### :white_check_mark: Requirements
+
+Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) and [Node](https://nodejs.org/en/) installed.
+<br/>
+
+```bash
+
+# Clone and access the folder
+$ git clone https://github.com/Rawallon/trello-clone-next.git && cd trello-clone-next
+
+# Install the dependencies
+$ npm install
+
+# Configure your .env.local following the .env.exemple
+
+# Run the web server
+$ npm start
 ```
 
+Since you've made this far don't forget to ⭐️ to let me know if you enjoyed! 🤗 
