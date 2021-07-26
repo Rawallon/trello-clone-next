@@ -9,7 +9,7 @@ import {
   CARDS_COLLECTION,
   LISTS_COLLECTION,
 } from '../../../utils/constants';
-import { find, remove, update } from '../../../utils/database';
+import { find, remove, removeMany, update } from '../../../utils/database';
 import { sessionReturn } from '../../../utils/interfaces';
 interface patchBody {
   field: string;
@@ -117,15 +117,27 @@ export default async function handler(
       const { slug } = req.query;
 
       const deleteBoard = await remove(BOARDS_COLLECTION, {
-        id: new ObjectId(String(slug)),
-        author: new ObjectId(String(session.user.userId)),
+        id: String(slug),
+        author: String(session.user.userId),
       });
-      if (deleteBoard) {
+
+      const deleteLists = await removeMany(LISTS_COLLECTION, {
+        boardId: String(slug),
+        authorId: String(session.user.userId),
+      });
+
+      const deleteCards = await removeMany(CARDS_COLLECTION, {
+        boardId: String(slug),
+        authorId: String(session.user.userId),
+      });
+
+      if (deleteBoard && deleteLists && deleteCards) {
         res.status(200).send({ success: true });
+        return;
       } else {
         res.status(404).send({ success: false });
+        return;
       }
-      return;
     }
 
     default:

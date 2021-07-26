@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { queryMapParser, queryParser } from './mongoHelper';
+import { mongoidParser, queryMapParser, queryParser } from './mongoHelper';
 
 const { DATABASE_URL, MONGODB_DB } = process.env;
 
@@ -116,7 +116,24 @@ export async function remove(
   }
   const insertReturn = await cached.conn.db
     .collection(collection)
-    .deleteOne(queryParser(filter));
+    .deleteOne(mongoidParser(filter));
+  if (insertReturn.deletedCount > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export async function removeMany(
+  collection: string,
+  filter = {} as Object,
+): Promise<boolean> {
+  if (!cached.conn) {
+    await connectToDB();
+  }
+  const insertReturn = await cached.conn.db
+    .collection(collection)
+    .deleteMany(mongoidParser(filter));
   if (insertReturn.deletedCount > 0) {
     return true;
   } else {
