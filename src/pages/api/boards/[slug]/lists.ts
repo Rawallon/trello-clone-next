@@ -1,4 +1,5 @@
 import { getSession } from 'next-auth/client';
+
 import { LISTS_COLLECTION } from '../../../../utils/constants';
 import { insert, remove, update } from '../../../../utils/database';
 import { idGenerator } from '../../../../utils/idGenerator';

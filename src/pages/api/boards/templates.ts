@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
+
 import {
   BOARDS_COLLECTION,
   CARDS_COLLECTION,

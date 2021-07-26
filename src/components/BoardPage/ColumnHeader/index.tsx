@@ -121,7 +121,7 @@ function ColumnHeader({
     );
   };
 
-  function onKeyPressHandler(event: SyntheticEvent<HTMLInputElement>) {
+  function onKeyPressHandler(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
       saveChangeTitle();
       setIsEditingTitle(false);

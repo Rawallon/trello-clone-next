@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
-import { Board } from '../../../context/BoardContext';
+
 import { BOARDS_COLLECTION } from '../../../utils/constants';
 import { find, insert } from '../../../utils/database';
 import { sessionReturn } from './../../../utils/interfaces';

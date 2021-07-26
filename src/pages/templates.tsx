@@ -1,10 +1,14 @@
 import { getSession, signOut, useSession } from 'next-auth/client';
 import { useState } from 'react';
+
 import AddBoardModal from '../components/BoardListing/AddBoardModal';
 import ProfileSideBar from '../components/BoardListing/ProfileSideBar';
 import TemplateListProps from '../components/BoardListing/TemplateList';
+
 import { Board, useBoard } from '../context/BoardContext';
+
 import styles from '../styles/BoardListing.module.css';
+
 import ApiCall from '../utils/API';
 import { sessionReturn } from '../utils/interfaces';
 
@@ -14,7 +18,10 @@ interface apiReturn {
 }
 
 export default function BoardListing({ boards }) {
-  const [session, loading] = useSession() as unknown as [sessionReturn, boolean];
+  const [session, loading] = useSession() as unknown as [
+    sessionReturn,
+    boolean,
+  ];
   const { bgOptions, createNewBoardFromTemplate } = useBoard();
 
   const [isCreateModal, setIsCreateModal] = useState(false);

@@ -32,7 +32,7 @@ function ProfileSideBar({ username, picture, signOut }: ProfileSideBar) {
       <div className={styles.menuItems}>
         <ul>
           {routes.map((_, index) => (
-            <Link href={routes[index].link}>
+            <Link key={index} href={routes[index].link}>
               <li
                 className={
                   routes[index].link === router.route ? styles.active : null

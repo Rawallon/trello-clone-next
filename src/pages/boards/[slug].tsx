@@ -10,18 +10,33 @@ import {
   resetServerContext,
 } from 'react-beautiful-dnd';
 import { io } from 'socket.io-client';
+
+import { useBoard } from '../../context/BoardContext';
+import { Card as ICard, useCards } from '../../context/CardsContext';
+import { List, useList } from '../../context/ListsContext';
+import { useModal } from '../../context/ModalContext';
+
 import AddList from '../../components/BoardPage/AddList';
 import Card from '../../components/BoardPage/Card';
 import Column from '../../components/BoardPage/Column';
 import ColumnHeader from '../../components/BoardPage/ColumnHeader';
 import ModalPortal from '../../components/BoardPage/ModalPortal';
-import { Board, useBoard } from '../../context/BoardContext';
-import { useCards } from '../../context/CardsContext';
-import { useList } from '../../context/ListsContext';
-import { useModal } from '../../context/ModalContext';
-import styles from '../../styles/Board.module.css';
+
 import ApiCall from '../../utils/API';
 import { sessionReturn } from '../../utils/interfaces';
+
+import styles from '../../styles/Board.module.css';
+
+export interface FetchBoard {
+  id: string;
+  title: string;
+  bgcolor: string;
+  lists: List;
+  cards: ICard;
+  author: string;
+  isPublic: boolean;
+  permissionList: string[];
+}
 
 let socket;
 export default function BoardSlug({
@@ -351,7 +366,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = (await getSession(ctx)) as unknown as sessionReturn;
   const { slug } = ctx.params;
 
-  const data: Board = await ApiCall(`http://localhost:3000/api/boards/${slug}`);
+  const data: FetchBoard = await ApiCall(
+    `http://localhost:3000/api/boards/${slug}`,
+  );
   let isAuthorized = false;
   if (session) {
     isAuthorized =

@@ -1,8 +1,9 @@
-import { signIn, signOut, useSession } from 'next-auth/client';
-import { SignInForm } from '../components/Home/SignInForm';
+import { signIn } from 'next-auth/client';
+
 import { Illustration } from '../components/Home/Illustration';
+import { SignInForm } from '../components/Home/SignInForm';
+
 import styles from '../styles/Home.module.css';
-import Link from 'next/link';
 
 function Home() {
   return (
