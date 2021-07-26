@@ -366,9 +366,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = (await getSession(ctx)) as unknown as sessionReturn;
   const { slug } = ctx.params;
 
-  const data: FetchBoard = await ApiCall(
-    `http://localhost:3000/api/boards/${slug}`,
-  );
+  const data: FetchBoard = await ApiCall(`/api/boards/${slug}`);
   let isAuthorized = false;
   if (session) {
     isAuthorized =

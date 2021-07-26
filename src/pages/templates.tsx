@@ -71,9 +71,7 @@ export default function BoardListing({ boards }) {
 export async function getServerSideProps(context) {
   const session = (await getSession(context)) as unknown as sessionReturn;
   if (!session) return { props: {} };
-  const data: apiReturn = await ApiCall(
-    `http://localhost:3000/api/boards/templates`,
-  );
+  const data: apiReturn = await ApiCall(`/api/boards/templates`);
   return {
     props: { boards: data, session },
   };

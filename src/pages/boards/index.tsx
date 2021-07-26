@@ -67,7 +67,7 @@ export async function getServerSideProps(context) {
   const session = (await getSession(context)) as unknown as sessionReturn;
   if (!session) return { props: {} };
   const data: apiReturn = await ApiCall(
-    `http://localhost:3000/api/boards?userid=${session.user.userId}`,
+    `/api/boards?userid=${session.user.userId}`,
   );
   return {
     props: { boards: data, session },
